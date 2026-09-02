@@ -7,5 +7,5 @@
   permission enforcement, routes, chrome, and shared controls belong to the
   Host.
 - Do not add compatibility shims during the current design-validation phase.
-- The package currently keeps the existing product identifiers, but no API,
-  configuration, or data-mode compatibility is implied by that naming.
+- The package currently keeps the existing product identifiers, but no API or
+  configuration compatibility is implied by that naming.

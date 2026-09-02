@@ -1,0 +1,32 @@
+{
+  "forbiddenTerms": [
+    "deepseek harness",
+    "deepseek",
+    "dsh"
+  ],
+  "legalExceptions": {
+    "policyFile": "legal/public-name-policy.json",
+    "generatedDependencyLock": {
+      "path": "package-lock.json",
+      "packagePrefix": "@deepseek-ai/"
+    },
+    "runtimeImports": {
+      "paths": [
+        "package.json",
+        "src/entry.ts",
+        "src/index.ts"
+      ],
+      "packages": [
+        "@deepseek-ai/cordis",
+        "@deepseek-ai/schemastery"
+      ]
+    },
+    "generatedRuntimeArtifacts": {
+      "pathPrefix": "dist/",
+      "packages": [
+        "@deepseek-ai/cordis",
+        "@deepseek-ai/schemastery"
+      ]
+    }
+  }
+}

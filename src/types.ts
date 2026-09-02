@@ -1,6 +1,4 @@
 export type TraceLane = 'input' | 'model' | 'tools' | 'injection'
-export type TraceTruth = 'observed' | 'cordisx' | 'inferred'
-export type TraceOrigin = 'live' | 'fixture'
 export type TracePhase =
   | 'opened' | 'resumed' | 'started' | 'updated' | 'completed'
   | 'requested' | 'permission' | 'queued' | 'claimed' | 'projected'
@@ -8,7 +6,7 @@ export type TracePhase =
   | 'failed' | 'expired' | 'cancelled' | 'closed'
 
 export interface TraceSource {
-  readonly kind: 'host' | 'plugin' | 'fixture'
+  readonly kind: 'session' | 'plugin' | 'model' | 'tool'
   readonly id: string
   readonly label: string
 }
@@ -18,11 +16,9 @@ export interface TraceEvent {
   readonly sessionId: string
   readonly seq: number
   readonly recordedAt: string
-  readonly origin: TraceOrigin
   readonly lane: TraceLane
   readonly type: string
   readonly semanticType: string
-  readonly truth: TraceTruth
   readonly phase?: TracePhase
   readonly summary: string
   readonly source: TraceSource
@@ -32,15 +28,14 @@ export interface TraceEvent {
   readonly messageId?: string
   readonly toolCallId?: string
   readonly contextId?: string
-  readonly payload?: Readonly<Record<string, unknown>>
+  readonly payload?: unknown
 }
 
 export interface TraceStatus {
-  readonly mode: 'live' | 'fixture' | 'unavailable'
+  readonly mode: 'available' | 'unavailable'
   readonly completeness: 'partial' | 'complete' | 'unavailable'
   readonly contractVersion?: string
   readonly diagnostics: readonly string[]
-  readonly origins: readonly TraceOrigin[]
   readonly readOnly: true
 }
 
@@ -59,10 +54,4 @@ export interface TraceShowcaseStore {
   getSnapshot(): TraceSnapshot
   subscribe(listener: () => void): () => void
   dispose(): void
-}
-
-/** Contract-neutral plugin boundary; a future public Host adapter opens stores through this seam. */
-export interface TraceProvider {
-  readonly mode: 'live' | 'fixture' | 'unavailable'
-  open(sessionId: string): TraceShowcaseStore
 }

@@ -11,13 +11,16 @@
     "dist",
     "README.md",
     "README.zh-Hans.md",
-    "cordisx.plugin.json"
+    "cordisx.plugin.json",
+    "runtime-manifest.json",
+    "legal"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node scripts/clean-dist.mjs && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run build && npm test && npm run pack:check",
+    "naming:check": "node scripts/check-public-naming.mjs",
+    "check": "npm run naming:check && npm run typecheck && npm run build && npm test && npm run naming:check && npm run pack:check",
     "pack:check": "npm pack --dry-run"
   },
   "dependencies": {
@@ -26,6 +29,7 @@
     "cordisx": "0.1.0-beta.1"
   },
   "devDependencies": {
+    "@cordisx/protocol": "github:cordisx/cordisx-protocol#3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

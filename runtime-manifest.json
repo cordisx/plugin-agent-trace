@@ -1,0 +1,63 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-manifest.v5.schema.json",
+  "schemaVersion": 5,
+  "id": "agent-trace-showcase",
+  "name": "Agent Trace Showcase",
+  "capabilities": [
+    {
+      "name": "sessions.get",
+      "required": false,
+      "scope": {
+        "sessionIds": {
+          "kind": "host-route-param",
+          "routeId": "session.timeline",
+          "param": "sessionId"
+        }
+      },
+      "rationale": {
+        "title": { "namespace": "agent-trace-showcase", "key": "permission.sessions.title", "fallback": "Read this Agent session" },
+        "description": { "namespace": "agent-trace-showcase", "key": "permission.sessions.description", "fallback": "Read permission-filtered durable events for the Agent session in the active Host route." },
+        "feature": { "namespace": "agent-trace-showcase", "key": "permission.sessions.feature", "fallback": "Shows the read-only Agent Trace Timeline." },
+        "deniedBehavior": { "namespace": "agent-trace-showcase", "key": "permission.sessions.denied", "fallback": "The Timeline stays empty and reports that live Session data is unavailable." }
+      },
+      "security": { "dataUse": "ephemeral", "retention": "runtime", "externalTransfer": false }
+    },
+    {
+      "name": "sessions.read",
+      "required": false,
+      "scope": {
+        "sessionIds": {
+          "kind": "host-route-param",
+          "routeId": "session.timeline",
+          "param": "sessionId"
+        }
+      },
+      "rationale": {
+        "title": { "namespace": "agent-trace-showcase", "key": "permission.sessions.title", "fallback": "Read this Agent session" },
+        "description": { "namespace": "agent-trace-showcase", "key": "permission.sessions.description", "fallback": "Read permission-filtered durable events for the Agent session in the active Host route." },
+        "feature": { "namespace": "agent-trace-showcase", "key": "permission.sessions.feature", "fallback": "Shows the read-only Agent Trace Timeline." },
+        "deniedBehavior": { "namespace": "agent-trace-showcase", "key": "permission.sessions.denied", "fallback": "The Timeline stays empty and reports that live Session data is unavailable." }
+      },
+      "security": { "dataUse": "ephemeral", "retention": "runtime", "externalTransfer": false }
+    },
+    {
+      "name": "sessions.subscribe",
+      "required": false,
+      "scope": {
+        "sessionIds": {
+          "kind": "host-route-param",
+          "routeId": "session.timeline",
+          "param": "sessionId"
+        }
+      },
+      "rationale": {
+        "title": { "namespace": "agent-trace-showcase", "key": "permission.sessions.title", "fallback": "Read this Agent session" },
+        "description": { "namespace": "agent-trace-showcase", "key": "permission.sessions.description", "fallback": "Read permission-filtered durable events for the Agent session in the active Host route." },
+        "feature": { "namespace": "agent-trace-showcase", "key": "permission.sessions.feature", "fallback": "Shows the read-only Agent Trace Timeline." },
+        "deniedBehavior": { "namespace": "agent-trace-showcase", "key": "permission.sessions.denied", "fallback": "The Timeline stays empty and reports that live Session data is unavailable." }
+      },
+      "security": { "dataUse": "ephemeral", "retention": "runtime", "externalTransfer": false }
+    }
+  ],
+  "services": []
+}
