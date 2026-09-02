@@ -1,6 +1,6 @@
 # Agent Trace migration checkpoint
 
-Date: 2026-09-02
+Date: 2026-09-03
 
 This document records the read-only source audit and the exact boundary at
 which the independent repository consumed the SessionEvent contract owner's
@@ -62,16 +62,17 @@ adapter/ledger, access a raw bridge, or depend on concrete `ctx.agentLoop`.
 
 ## PROTOCOL_READY handoff
 
-Contract owner task: `01a06193-0485-7bc1-a7f9-85cd7edc50a6`.
-
 Formal Protocol dependency:
 
 - repository: `CordisX/cordisx-protocol`;
-- main commit: `3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd`;
-- pull request: `https://github.com/cordisx/cordisx-protocol/pull/73`;
+- main commit: `8891722a7735a3bd00bdd5315084b35b748f5e7f`;
+- pull requests: `https://github.com/cordisx/cordisx-protocol/pull/77` and
+  `https://github.com/cordisx/cordisx-protocol/pull/78`;
 - public entrypoint: `@cordisx/protocol/sessions/v1`;
-- status: merged to remote main with successful CI and fresh-clone readback;
-  not yet pinned by Mono.
+- status: merged to remote main; focused type, conformance, distribution,
+  diff, naming, and formal-main export readback passed. The broad Protocol
+  workflow retains its pre-existing Manager v2 AJV strict-union failure. Mono
+  is not updated by this task.
 
 The consumer lives in `src/session-store.ts`.
 `src/react-view.tsx` remains unaware of Host services. `src/index.ts` declares
@@ -84,10 +85,28 @@ the Timeline is a durable `SessionEvent`. If a future UI requirement needs a
 non-durable live fact, it must use the separate formal Agent subscription and
 must never manufacture a durable cursor or ledger.
 
+## HOST_RUNTIME_READY handoff
+
+Formal Host dependency:
+
+- repository: `CordisX/cordisx`;
+- main commit: `eb68d7a314c922e07c6f422ad35ee24f581be1ac`;
+- pull requests: `https://github.com/cordisx/cordisx/pull/224` through
+  `https://github.com/cordisx/cordisx/pull/227`;
+- status: merged to remote main and pinned to Protocol
+  `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
+  Shell v4 terminal, permission/scope, no-check type, package allowlist, and
+  diff checks passed. The full Host repository remains red only at the
+  pre-existing Playground/Manager/Navigation baseline.
+
+The Host provides the permission-scoped `ctx.sessions` service and fences
+route, Session, plugin generation, permission, and connection replacement.
+Those terminal fences clear the Timeline and leave it honestly unavailable.
+This repository does not import or package the Host runtime implementation.
+
 ## Deferred owner actions
 
-Until Protocol is distributed, Host implements the public service, and real
-integration verification succeeds:
+Until real-App integration verification succeeds:
 
 - do not remove the built-in Host package or its tests;
 - do not register both packages in one Host composition;

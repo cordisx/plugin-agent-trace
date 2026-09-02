@@ -179,18 +179,24 @@ describe('SessionTraceStore', () => {
     })
   })
 
-  it('fails closed when the Host terminates an active subscription', async () => {
+  it.each([
+    'route-replaced',
+    'session-replaced',
+    'plugin-generation-replaced',
+    'permission-revoked',
+    'connection-replaced',
+  ] satisfies readonly SessionSubscriptionCloseCode[])('fails closed when the Host terminates an active subscription with %s', async code => {
     const harness = sessionHarness()
     const store = new SessionTraceStore(harness.sessions, 'session-a', 50)
     await store.settled()
     expect(store.getSnapshot().status.mode).toBe('available')
 
-    harness.close('route-replaced')
+    harness.close(code)
     await Promise.resolve()
 
     expect(store.getSnapshot()).toMatchObject({
       events: [],
-      status: { mode: 'unavailable', diagnostics: ['session-subscription-closed:route-replaced'] },
+      status: { mode: 'unavailable', diagnostics: [`session-subscription-closed:${code}`] },
     })
   })
 
