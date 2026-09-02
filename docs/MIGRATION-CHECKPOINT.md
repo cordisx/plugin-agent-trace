@@ -90,10 +90,14 @@ must never manufacture a durable cursor or ledger.
 Formal Host dependency:
 
 - repository: `CordisX/cordisx`;
-- main commit: `9e4b183809d98b8055eb6bd08d4765ac15881483`;
-- pull request: `https://github.com/cordisx/cordisx/pull/224`;
+- main commit: `eb68d7a314c922e07c6f422ad35ee24f581be1ac`;
+- pull requests: `https://github.com/cordisx/cordisx/pull/224` through
+  `https://github.com/cordisx/cordisx/pull/227`;
 - status: merged to remote main and pinned to Protocol
-  `8891722a7735a3bd00bdd5315084b35b748f5e7f`.
+  `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
+  Shell v4 terminal, permission/scope, no-check type, package allowlist, and
+  diff checks passed. The full Host repository remains red only at the
+  pre-existing Playground/Manager/Navigation baseline.
 
 The Host provides the permission-scoped `ctx.sessions` service and fences
 route, Session, plugin generation, permission, and connection replacement.

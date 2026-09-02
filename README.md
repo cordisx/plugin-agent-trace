@@ -69,5 +69,5 @@ npm run check
 `npm pack --dry-run`. `cordisx.plugin.json` is the immutable package manifest.
 The Protocol dependency is pinned to an exact remotely resolvable main commit.
 The Host runtime is formally available at CordisX main commit
-`9e4b183809d98b8055eb6bd08d4765ac15881483`. The package remains private until
+`eb68d7a314c922e07c6f422ad35ee24f581be1ac`. The package remains private until
 real-App integration verification is complete.
