@@ -115,4 +115,28 @@ describe('Host-owned Agent Trace body', () => {
     expect(dom.window.document.querySelectorAll('.cat-row')).toHaveLength(0)
     root.unmount()
   })
+
+  it('disposes the prior Session store when the Host route replaces sessionId', async () => {
+    const dom = new JSDOM('<body><div id="root"></div></body>')
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: dom.window })
+    Object.defineProperty(globalThis, 'document', { configurable: true, value: dom.window.document })
+    const first = availableStore()
+    const second = availableStore()
+    const disposeFirst = vi.spyOn(first, 'dispose')
+    const disposeSecond = vi.spyOn(second, 'dispose')
+    const createStore = vi.fn((sessionId: string) => sessionId === 'session-a' ? first : second)
+    const Page = createTraceReactPage(createStore)
+    const root = createRoot(dom.window.document.getElementById('root')!)
+
+    root.render(createElement(Page, propsFor('session-a')))
+    await new Promise(resolve => setTimeout(resolve, 20))
+    root.render(createElement(Page, propsFor('session-b')))
+    await new Promise(resolve => setTimeout(resolve, 20))
+
+    expect(createStore.mock.calls.map(([sessionId]) => sessionId)).toEqual(['session-a', 'session-b'])
+    expect(disposeFirst).toHaveBeenCalledOnce()
+    expect(disposeSecond).not.toHaveBeenCalled()
+    root.unmount()
+    expect(disposeSecond).toHaveBeenCalledOnce()
+  })
 })

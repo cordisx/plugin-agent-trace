@@ -20,7 +20,7 @@ Agent/Session Runtime 的 ownership model 如下：
   Session 事实。
 
 正式契约是 Protocol main commit
-`3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd` 的
+`8891722a7735a3bd00bdd5315084b35b748f5e7f` 的
 `@cordisx/protocol/sessions/v1`。Timeline 先读取固定 Session snapshot，
 分页读取 immutable watermark，再接续 atomic replay/live subscription；订阅
 终止时会清空视图并报告 terminal code。
@@ -54,4 +54,6 @@ npm run check
 
 `npm run check` 包含 typecheck、build、focused tests 与
 `npm pack --dry-run`。Protocol dependency 精确 pin 到可从远端解析的 main
-commit。Host implementation 与真实集成验证闭合前，package 保持 private。
+commit。Host Runtime 已在 CordisX main commit
+`9e4b183809d98b8055eb6bd08d4765ac15881483` 正式提供；真实 App 集成验证闭合前，
+package 保持 private。
