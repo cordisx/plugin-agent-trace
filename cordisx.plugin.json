@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-package.v1.schema.json",
+  "schemaVersion": 1,
+  "id": "agent-trace-showcase",
+  "version": "0.1.0",
+  "entry": "./dist/index.js",
+  "readme": "./README.md",
+  "canonicalSource": "https://github.com/CordisX/plugin-agent-trace",
+  "compatibility": {
+    "runtimeAbi": 1,
+    "protocol": 1
+  },
+  "dependencies": [],
+  "runtimeManifest": {
+    "$schema": "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-manifest.v1.schema.json",
+    "schemaVersion": 1,
+    "id": "agent-trace-showcase",
+    "name": "Agent Trace Showcase",
+    "capabilities": []
+  }
+}
