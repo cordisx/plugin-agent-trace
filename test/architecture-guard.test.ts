@@ -13,6 +13,8 @@ describe('architecture guard', () => {
       'ctx.agentEvents',
       'ctx.agentHistory',
       'ctx.agentLoop',
+      'agentEvents',
+      'agentHistory',
       'electronBridge',
       'app-server',
       'tdesign',
@@ -20,6 +22,7 @@ describe('architecture guard', () => {
       'querySelector',
       'getElementById',
       'packages/cli/src',
+      'packages/host',
     ]) expect(source).not.toContain(forbidden)
   })
 

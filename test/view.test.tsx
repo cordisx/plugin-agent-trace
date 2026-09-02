@@ -3,7 +3,7 @@ import { createElement } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { describe, expect, it, vi } from 'vitest'
 import type { CordisXReactPageProps } from 'cordisx/contracts'
-import { FixtureTraceStore, UnavailableTraceStore } from '../src/providers.js'
+import { UnavailableTraceStore } from '../src/unavailable-store.js'
 import { createTraceReactPage } from '../src/react-view.js'
 import type { TraceShowcaseStore } from '../src/types.js'
 
@@ -51,32 +51,67 @@ async function mount(dom: JSDOM, store: TraceShowcaseStore): Promise<Root> {
   return root
 }
 
+function availableStore(): TraceShowcaseStore {
+  const snapshot = Object.freeze({
+    sessionId: 'session-a',
+    events: Object.freeze([
+      Object.freeze({
+        id: 'session:session-a:0', sessionId: 'session-a', seq: 0,
+        recordedAt: '2026-01-01T00:00:00.000Z', lane: 'model' as const,
+        type: 'turn/start', semanticType: 'turn/start', phase: 'started' as const,
+        summary: 'Turn 1 started.', turnId: '1',
+        source: Object.freeze({ kind: 'session' as const, id: 'session-a', label: 'Session authority' }),
+      }),
+      Object.freeze({
+        id: 'session:session-a:1', sessionId: 'session-a', seq: 1,
+        recordedAt: '2026-01-01T00:00:01.000Z', lane: 'model' as const,
+        type: 'turn/end', semanticType: 'turn/end', phase: 'completed' as const,
+        summary: 'Turn 1 ended.', turnId: '1',
+        source: Object.freeze({ kind: 'session' as const, id: 'session-a', label: 'Session authority' }),
+      }),
+    ]),
+    status: Object.freeze({
+      mode: 'available' as const,
+      completeness: 'partial' as const,
+      contractVersion: 'cordisx.session-event/v1',
+      diagnostics: Object.freeze(['Permission-filtered durable Session facts.']),
+      readOnly: true as const,
+    }),
+    range: Object.freeze({ loaded: 2, totalAvailable: 2, renderedLimit: 100 }),
+  })
+  return {
+    getSnapshot: () => snapshot,
+    subscribe: () => () => {},
+    dispose: () => {},
+  }
+}
+
 describe('Host-owned Agent Trace body', () => {
-  it('renders an explicit fixture banner, read-only rows, detail, and no Host chrome', async () => {
+  it('renders SessionEvent rows, detail, and no Host chrome', async () => {
     const dom = new JSDOM('<body><div id="root"></div></body>')
-    const store = new FixtureTraceStore('session-a', 50)
+    const store = availableStore()
     const dispose = vi.spyOn(store, 'dispose')
     const root = await mount(dom, store)
     const document = dom.window.document
 
     expect(document.querySelector('[data-agent-trace-showcase="true"]')?.getAttribute('data-read-only')).toBe('true')
-    expect(document.querySelector('.cat-status')?.textContent).toContain('DEMO · fixture')
-    expect(document.querySelectorAll('.cat-row')).toHaveLength(8)
+    expect(document.querySelector('.cat-status')?.textContent).toContain('available')
+    expect(document.querySelectorAll('.cat-row')).toHaveLength(2)
     expect(document.querySelector('header,nav,[role="tablist"]')).toBeNull()
     document.querySelector<HTMLTableRowElement>('.cat-row')!.click()
     await new Promise(resolve => setTimeout(resolve, 20))
-    expect(document.querySelector('.cat-detail')?.textContent).toContain('fixture')
+    expect(document.querySelector('.cat-detail')?.textContent).toContain('Turn 1 started')
 
     root.unmount()
     expect(dispose).toHaveBeenCalledOnce()
   })
 
-  it('renders truthful unavailable live mode without fabricated rows', async () => {
+  it('renders truthful unavailable state without fabricated rows', async () => {
     const dom = new JSDOM('<body><div id="root"></div></body>')
-    const store = new UnavailableTraceStore('session-a', 100, 'NEED_API: ctx.sessions')
+    const store = new UnavailableTraceStore('session-a', 100, 'session-service-unavailable')
     const root = await mount(dom, store)
 
-    expect(dom.window.document.querySelector('[data-empty-state="Agent events unavailable"]')?.textContent).toContain('NEED_API')
+    expect(dom.window.document.querySelector('[data-empty-state="Session events unavailable"]')?.textContent).toContain('session-service-unavailable')
     expect(dom.window.document.querySelectorAll('.cat-row')).toHaveLength(0)
     root.unmount()
   })

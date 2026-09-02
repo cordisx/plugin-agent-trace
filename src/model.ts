@@ -1,22 +1,18 @@
-import type { TraceEvent, TraceLane, TraceOrigin, TracePhase, TraceTruth } from './types.js'
+import type { TraceEvent, TraceLane, TracePhase } from './types.js'
 
 export interface TraceFilters {
   readonly lane: TraceLane | 'all'
-  readonly truth: TraceTruth | 'all'
-  readonly origin: TraceOrigin | 'all'
   readonly type: string | 'all'
   readonly phase: TracePhase | 'all'
 }
 
 export const EMPTY_FILTERS: TraceFilters = Object.freeze({
-  lane: 'all', truth: 'all', origin: 'all', type: 'all', phase: 'all',
+  lane: 'all', type: 'all', phase: 'all',
 })
 
 export function filterTraceEvents(events: readonly TraceEvent[], filters: TraceFilters): readonly TraceEvent[] {
   return events.filter(event => (
     (filters.lane === 'all' || event.lane === filters.lane)
-    && (filters.truth === 'all' || event.truth === filters.truth)
-    && (filters.origin === 'all' || event.origin === filters.origin)
     && (filters.type === 'all' || event.type === filters.type)
     && (filters.phase === 'all' || event.phase === filters.phase)
   ))
