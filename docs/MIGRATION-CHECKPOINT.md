@@ -64,15 +64,14 @@ adapter/ledger, access a raw bridge, or depend on concrete `ctx.agentLoop`.
 
 Contract owner task: `01a06193-0485-7bc1-a7f9-85cd7edc50a6`.
 
-Protocol owner candidate:
+Formal Protocol dependency:
 
 - repository: `CordisX/cordisx-protocol`;
-- owner branch: `codex/agent-session-runtime-v1`;
-- commit: `d1b3486df18034bb5aecde090b3bd1b29b2c55d8`;
-- tree: `371bfafaac49577d4ae45e355b4a32b8be5a7127`;
+- main commit: `3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd`;
+- pull request: `https://github.com/cordisx/cordisx-protocol/pull/73`;
 - public entrypoint: `@cordisx/protocol/sessions/v1`;
-- status: focused/full/distribution/diff gates pass locally; not pushed,
-  published, or pinned by Mono.
+- status: merged to remote main with successful CI and fresh-clone readback;
+  not yet pinned by Mono.
 
 The consumer lives in `src/session-store.ts`.
 `src/react-view.tsx` remains unaware of Host services. `src/index.ts` declares
@@ -96,7 +95,5 @@ integration verification succeeds:
 - do not publish npm artifacts;
 - do not claim real runtime verification.
 
-Because commit `d1b3486` is not available from GitHub, the branch's declared
-Git dependency cannot yet be locked or installed by a fresh `npm ci`. Local
-focused gates use a tarball packed directly from the exact owner worktree; this
-is verification input, not a vendored API or distribution substitute.
+The declared Git dependency and lockfile resolve the exact formal Protocol
+main commit from GitHub.

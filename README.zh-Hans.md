@@ -19,10 +19,9 @@ Agent/Session Runtime 的 ownership model 如下：
 - 环境组合和 transport binding 均为 Host-private，不改变插件契约、权限或
   Session 事实。
 
-当前正式候选是 Protocol commit
-`d1b3486df18034bb5aecde090b3bd1b29b2c55d8` 的
-`@cordisx/protocol/sessions/v1`；它已在 owner worktree 完成本地验证，但尚未
-push、publish 或由 CordisX Mono pin。Timeline 先读取固定 Session snapshot，
+正式契约是 Protocol main commit
+`3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd` 的
+`@cordisx/protocol/sessions/v1`。Timeline 先读取固定 Session snapshot，
 分页读取 immutable watermark，再接续 atomic replay/live subscription；订阅
 终止时会清空视图并报告 terminal code。
 
@@ -54,7 +53,5 @@ npm run check
 ```
 
 `npm run check` 包含 typecheck、build、focused tests 与
-`npm pack --dry-run`。Protocol commit `d1b3486` push 前，全新 `npm ci` 无法
-解析该 Git pin；当前本地验证使用从精确 owner worktree 打出的 tarball。
-Protocol distribution、Host implementation 与真实集成验证闭合前，
-package 保持 private。
+`npm pack --dry-run`。Protocol dependency 精确 pin 到可从远端解析的 main
+commit。Host implementation 与真实集成验证闭合前，package 保持 private。

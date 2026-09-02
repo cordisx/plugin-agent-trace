@@ -21,9 +21,8 @@ The Agent/Session Runtime ownership model is:
 - environment composition and transport bindings remain Host-private and do
   not change plugin contracts, permissions, or Session facts.
 
-The contract candidate is `@cordisx/protocol/sessions/v1` at Protocol commit
-`d1b3486df18034bb5aecde090b3bd1b29b2c55d8`. It is locally verified but is not
-yet pushed, published, or pinned by CordisX Mono. The Timeline reads a fixed
+The contract is `@cordisx/protocol/sessions/v1` at Protocol main commit
+`3e3f248abb94fe57e613b020ffa8a6ceaba6c3cd`. The Timeline reads a fixed
 Session snapshot, pages through its immutable watermark, then follows the
 atomic replay/live subscription. Subscription termination clears the view and
 reports the terminal code.
@@ -68,7 +67,6 @@ npm run check
 
 `npm run check` runs typecheck, build, focused tests, and
 `npm pack --dry-run`. `cordisx.plugin.json` is the immutable package manifest.
-Until Protocol commit `d1b3486` is pushed, a fresh `npm ci` cannot resolve the
-pinned Git dependency; local verification uses a tarball packed from the exact
-owner worktree. The package remains private until Protocol distribution, Host
-implementation, and real integration verification are complete.
+The Protocol dependency is pinned to an exact remotely resolvable main commit.
+The package remains private until Host implementation and real integration
+verification are complete.
