@@ -90,9 +90,9 @@ must never manufacture a durable cursor or ledger.
 Formal Host dependency:
 
 - repository: `CordisX/cordisx`;
-- main commit: `89b512aa79fcabe00a40d9636bc85496d9e5e8ec`;
+- main commit: `f72e3531abc4e9410ef8b6efd67ab9f77d4717b3`;
 - pull requests: `https://github.com/cordisx/cordisx/pull/224` through
-  `https://github.com/cordisx/cordisx/pull/229`;
+  `https://github.com/cordisx/cordisx/pull/230`;
 - status: merged to remote main and pinned to Protocol
   `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
   Shell v4 terminal, permission/scope, no-check type, package allowlist, and
@@ -108,6 +108,11 @@ receive the Host's no-dialog authorization; it still resolves and persists one
 exact Session scope behind a revocable generation/connection-fenced lease.
 Installed/production and ordinary Playground plugins retain interactive,
 fail-closed authorization.
+
+The actual `dev:ui` session-load path gives explicitly configured, enabled
+local entries the Host-verified local-development identity, provenance, and
+artifact generation required by that authorization rule. Packaged, remote,
+disabled, and non-Playground entries do not receive that provenance.
 
 ## Deferred owner actions
 
