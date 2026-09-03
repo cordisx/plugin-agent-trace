@@ -55,5 +55,5 @@ npm run check
 `npm run check` 包含 typecheck、build、focused tests 与
 `npm pack --dry-run`。Protocol dependency 精确 pin 到可从远端解析的 main
 commit。Host Runtime 已在 CordisX main commit
-`89b512aa79fcabe00a40d9636bc85496d9e5e8ec` 正式提供；真实 App 集成验证闭合前，
+`f72e3531abc4e9410ef8b6efd67ab9f77d4717b3` 正式提供；真实 App 集成验证闭合前，
 package 保持 private。
