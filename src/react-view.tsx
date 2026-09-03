@@ -23,11 +23,14 @@ function options(values: readonly string[], all: string) {
 
 function Detail({ event }: { readonly event: TraceEvent | undefined }) {
   if (event === undefined) return <Text tone="muted">Select an event to inspect its public projection.</Text>
+  const definition = event.definitionResolution
   const fields: readonly [string, unknown][] = [
     ['Event', event.id], ['Sequence', event.seq], ['Recorded', event.recordedAt],
     ['Type', event.type], ['Semantic', event.semanticType], ['Phase', event.phase],
     ['Session', event.sessionId], ['Turn', event.turnId], ['Step', event.stepId], ['Item', event.itemId],
     ['Message', event.messageId], ['Tool call', event.toolCallId], ['Context', event.contextId],
+    ['Entity', definition?.identity.agentId], ['Entity revision', definition?.identity.revision],
+    ['Entity digest', definition?.digest], ['Definition name', definition?.definition.name],
     ['Source', `${event.source.kind}:${event.source.id}`],
   ]
   return <><Text as="p"><strong>{event.summary}</strong></Text><dl>{fields.filter(([, value]) => value !== undefined).map(([label, value]) => <Fragment key={label}><dt>{label}</dt><dd>{String(value)}</dd></Fragment>)}</dl>{event.payload === undefined ? null : <pre className="cat-payload">{JSON.stringify(event.payload, null, 2)}</pre>}</>

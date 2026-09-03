@@ -21,11 +21,17 @@ The Agent/Session Runtime ownership model is:
 - environment composition and transport bindings remain Host-private and do
   not change plugin contracts, permissions, or Session facts.
 
-The contract is `@cordisx/protocol/sessions/v1` at Protocol main commit
-`8891722a7735a3bd00bdd5315084b35b748f5e7f`. The Timeline reads a fixed
-Session snapshot, pages through its immutable watermark, then follows the
-atomic replay/live subscription. Subscription termination clears the view and
-reports the terminal code.
+The contracts are `@cordisx/protocol/sessions/v1` and the additive
+`EntityDefinitionBoundSessionEvent` from `@cordisx/protocol/entities/v1` at
+Protocol main commit `c96c290697f9e802a68c6d3bb094fd27d8d00d1e`.
+The Timeline reads a fixed Session snapshot, pages through its immutable
+watermark, then follows the atomic replay/live subscription. Subscription
+termination clears the view and reports the terminal code.
+
+For an entity-backed Session, `entity/definition-bound` is the durable source
+of the exact historical definition identity, digest, and definition bytes.
+The Timeline projects that persisted binding and never queries `ctx.entities`
+or relabels prior Session history from the latest local entity revision.
 
 The plugin consumes no alternate event service, Host-private import, unsafe
 cast, raw bridge, adapter, or second ledger.
@@ -68,6 +74,7 @@ npm run check
 `npm run check` runs typecheck, build, focused tests, and
 `npm pack --dry-run`. `cordisx.plugin.json` is the immutable package manifest.
 The Protocol dependency is pinned to an exact remotely resolvable main commit.
-The Host runtime is formally available at CordisX main commit
-`d11df2e0d4a2557dc184f4fcec0b7cd8659e289b`. The package remains private until
-real-App integration verification is complete.
+The entity-backed Host runtime is formally available at CordisX main commit
+`ff9cf8b1ba4e4caffa23abbd767dbba0b8884c8a`; Chatroom's entity-backed consumer
+is at `dc1d672b93e6b6a3a29961561546957d66955a1a`. The package remains private
+until real-App integration verification is complete.

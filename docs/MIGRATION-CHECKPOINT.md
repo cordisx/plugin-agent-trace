@@ -50,7 +50,9 @@ This repository currently owns:
 - Host-neutral Timeline model, filtering, grouping, and read-only body view;
 - `TraceShowcaseStore`, which is the read-only Timeline state boundary;
 - `src/session-store.ts`, which consumes only
-  `@cordisx/protocol/sessions/v1`, performs immutable snapshot paging, atomic
+  `@cordisx/protocol/sessions/v1` plus the
+  `EntityDefinitionBoundSessionEvent` extension from
+  `@cordisx/protocol/entities/v1`, performs immutable snapshot paging, atomic
   replay/live subscription, and fail-closed generation/terminal fencing;
 - truthful unavailable state whenever the public Session service or exact
   route-bound permission is absent;
@@ -65,10 +67,12 @@ adapter/ledger, access a raw bridge, or depend on concrete `ctx.agentLoop`.
 Formal Protocol dependency:
 
 - repository: `CordisX/cordisx-protocol`;
-- main commit: `8891722a7735a3bd00bdd5315084b35b748f5e7f`;
+- main commit: `c96c290697f9e802a68c6d3bb094fd27d8d00d1e`;
 - pull requests: `https://github.com/cordisx/cordisx-protocol/pull/77` and
-  `https://github.com/cordisx/cordisx-protocol/pull/78`;
-- public entrypoint: `@cordisx/protocol/sessions/v1`;
+  `https://github.com/cordisx/cordisx-protocol/pull/78`, plus entities/v1
+  `https://github.com/cordisx/cordisx-protocol/pull/79`;
+- public entrypoints: `@cordisx/protocol/sessions/v1` and
+  `@cordisx/protocol/entities/v1`;
 - status: merged to remote main; focused type, conformance, distribution,
   diff, naming, and formal-main export readback passed. The broad Protocol
   workflow retains its pre-existing Manager v2 AJV strict-union failure. Mono
@@ -90,11 +94,11 @@ must never manufacture a durable cursor or ledger.
 Formal Host dependency:
 
 - repository: `CordisX/cordisx`;
-- main commit: `d11df2e0d4a2557dc184f4fcec0b7cd8659e289b`;
+- main commit: `ff9cf8b1ba4e4caffa23abbd767dbba0b8884c8a`;
 - pull requests: `https://github.com/cordisx/cordisx/pull/224` through
-  `https://github.com/cordisx/cordisx/pull/231`;
+  `https://github.com/cordisx/cordisx/pull/236`;
 - status: merged to remote main and pinned to Protocol
-  `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
+  `c96c290697f9e802a68c6d3bb094fd27d8d00d1e`; focused Agent/Session runtime,
   Shell v4 terminal, permission/scope, no-check type, package allowlist, and
   diff checks passed. The #231 composition focus passed 14/14 with CLI
   `tsc --noCheck`. Its broad workflow stopped at
@@ -123,6 +127,29 @@ builds retain inline sourcemaps. Host-provided shared-React virtual inputs are
 excluded from filesystem watch/import graphs so Vite cannot reinterpret
 `cordisx/react`, `cordisx/ui`, or JSX-runtime virtual sources as absolute file
 imports; the real transitive source watch graph remains intact.
+
+## ENTITY_DEFINITION_BINDING_READY handoff
+
+Formal entity-backed consumers:
+
+- Host main: `ff9cf8b1ba4e4caffa23abbd767dbba0b8884c8a`
+  (`https://github.com/cordisx/cordisx/pull/236`);
+- Chatroom main: `dc1d672b93e6b6a3a29961561546957d66955a1a`
+  (`https://github.com/cordisx/plugin-chatroom/pull/10`);
+- Protocol main: `c96c290697f9e802a68c6d3bb094fd27d8d00d1e`.
+
+Host persists `entity/definition-bound` as an ignorable SessionEvent when it
+creates an entity-backed Session and resumes only from that persisted binding.
+Chatroom creates against the exact current Entity identity and resumes an
+existing Session with `definitionSource: 'session-persisted'`.
+
+Agent Trace recognizes that one durable extension during the existing
+snapshot/replay/live path. Its projection exposes
+`binding.resolution.identity`, `binding.resolution.digest`, and
+`binding.resolution.definition`. It does not inject or query `ctx.entities`,
+consult Chatroom configuration, or relabel historical runs from a current
+registry snapshot. Other unknown required events still fail closed; unrelated
+extensions remain skippable only when explicitly marked `ignorable: true`.
 
 ## Deferred owner actions
 

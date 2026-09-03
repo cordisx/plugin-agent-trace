@@ -20,7 +20,8 @@
       "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-snapshot.v1.schema.json",
       "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-subscribe-request.v1.schema.json",
       "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-subscription-page.v1.schema.json",
-      "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-subscription-close.v1.schema.json"
+      "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-subscription-close.v1.schema.json",
+      "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/entity-session-definition-binding.v1.schema.json"
     ]
   },
   "dependencies": [],

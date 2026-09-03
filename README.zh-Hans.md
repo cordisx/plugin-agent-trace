@@ -20,10 +20,17 @@ Agent/Session Runtime 的 ownership model 如下：
   Session 事实。
 
 正式契约是 Protocol main commit
-`8891722a7735a3bd00bdd5315084b35b748f5e7f` 的
-`@cordisx/protocol/sessions/v1`。Timeline 先读取固定 Session snapshot，
+`c96c290697f9e802a68c6d3bb094fd27d8d00d1e` 的
+`@cordisx/protocol/sessions/v1`，以及
+`@cordisx/protocol/entities/v1` 中增量定义的
+`EntityDefinitionBoundSessionEvent`。Timeline 先读取固定 Session snapshot，
 分页读取 immutable watermark，再接续 atomic replay/live subscription；订阅
 终止时会清空视图并报告 terminal code。
+
+对 entity-backed Session，`entity/definition-bound` 是历史定义 identity、
+digest 与 definition bytes 的唯一持久事实。Timeline 只投影该 Session 事件中
+持久化的 binding，绝不查询 `ctx.entities`，也不按最新 local entity revision
+重标历史。
 
 插件不消费替代 event service，也不使用 Host-private import、unsafe cast、
 raw bridge、额外 adapter 或第二 ledger。
@@ -54,6 +61,7 @@ npm run check
 
 `npm run check` 包含 typecheck、build、focused tests 与
 `npm pack --dry-run`。Protocol dependency 精确 pin 到可从远端解析的 main
-commit。Host Runtime 已在 CordisX main commit
-`d11df2e0d4a2557dc184f4fcec0b7cd8659e289b` 正式提供；真实 App 集成验证闭合前，
-package 保持 private。
+commit。entity-backed Host Runtime 已在 CordisX main commit
+`ff9cf8b1ba4e4caffa23abbd767dbba0b8884c8a` 正式提供；Chatroom 的 entity-backed
+消费已在 main commit `dc1d672b93e6b6a3a29961561546957d66955a1a`
+落地。真实 App 集成验证闭合前，package 保持 private。
