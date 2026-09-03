@@ -13,6 +13,7 @@ describe('architecture guard', () => {
       'ctx.agentEvents',
       'ctx.agentHistory',
       'ctx.agentLoop',
+      'ctx.entities',
       'agentEvents',
       'agentHistory',
       'electronBridge',
@@ -23,6 +24,7 @@ describe('architecture guard', () => {
       'getElementById',
       'packages/cli/src',
       'packages/host',
+      'EntityRegistry',
     ]) expect(source).not.toContain(forbidden)
   })
 

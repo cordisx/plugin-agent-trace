@@ -10,6 +10,7 @@ import type {
   SessionSubscriptionPage,
   UserMessage,
 } from '@cordisx/protocol/sessions/v1'
+import type { EntityDefinitionResolution } from '@cordisx/protocol/entities/v1'
 import type {
   TraceEvent,
   TraceLane,
@@ -72,6 +73,7 @@ function lifecyclePhase(event: SessionEvent): TracePhase | undefined {
 function lane(event: SessionEvent): TraceLane {
   switch (event.type) {
     case 'user/message': return 'input'
+    case 'entity/definition-bound':
     case 'agent/inbox/spliced': return 'injection'
     case 'tool/call':
     case 'tool/result':
@@ -109,6 +111,10 @@ function summary(event: SessionEvent): string {
     case 'agent/inbox/spliced': return `Agent ${event.data.target} inbox changed.`
     case 'approval/asked': return `Approval requested for ${event.data.toolName}.`
     case 'approval/decided': return `Approval ${event.data.outcome}.`
+    case 'entity/definition-bound': {
+      const { identity, digest, definition } = event.data.resolution
+      return `Session definition bound to ${definition.name ?? identity.agentId} (${identity.agentId}@${identity.revision}; ${digest}).`
+    }
     case 'session/end-seed': return 'Persisted Session seed ended.'
     default: return unknownEvent(event)
   }
@@ -171,6 +177,9 @@ export function projectSessionEvent(event: SessionEvent): TraceEvent | undefined
     : event.type === 'tool/result'
       ? event.data.message.source.callId
       : undefined
+  const definitionResolution: EntityDefinitionResolution | undefined = event.type === 'entity/definition-bound'
+    ? event.data.resolution
+    : undefined
   return Object.freeze({
     id: `session:${event.sessionId}:${event.seq}`,
     sessionId: event.sessionId,
@@ -186,6 +195,7 @@ export function projectSessionEvent(event: SessionEvent): TraceEvent | undefined
     ...(step === undefined ? {} : { stepId: step }),
     ...(messageId === undefined ? {} : { messageId }),
     ...(toolCallId === undefined ? {} : { toolCallId }),
+    ...(definitionResolution === undefined ? {} : { definitionResolution }),
     payload: event.data,
   })
 }

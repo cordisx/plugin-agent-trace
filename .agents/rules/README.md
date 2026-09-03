@@ -12,9 +12,12 @@
   service.
 - Do not consume alternate event/history services or Host-private transport
   contracts. `ctx.agents` owns create/resume/get and returns live Agent handles.
-- Agent Trace consumes only `@cordisx/protocol/sessions/v1` and is honestly
-  unavailable when the Host service, exact route permission, or subscription
-  is unavailable or replaced.
+- Agent Trace consumes `@cordisx/protocol/sessions/v1` plus only the
+  `EntityDefinitionBoundSessionEvent` extension from
+  `@cordisx/protocol/entities/v1`. It never queries `ctx.entities` or relabels
+  Session history from a mutable current registry. It is honestly unavailable
+  when the Host service, exact route permission, or subscription is unavailable
+  or replaced.
 - Every Session capability must be optional and dynamically bound by the Host
   to the active same-plugin route's exact `:sessionId`; never use an empty or
   wildcard scope.

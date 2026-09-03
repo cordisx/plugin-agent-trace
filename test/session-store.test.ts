@@ -10,9 +10,11 @@ import type {
   SessionSubscriptionClosed,
   SessionSubscriptionPage,
 } from '@cordisx/protocol/sessions/v1'
+import type { EntityDefinitionBoundSessionEvent } from '@cordisx/protocol/entities/v1'
 import { SessionTraceStore, projectSessionEvent } from '../src/session-store.js'
 
 const schema = 'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/session-event.v1.schema.json' as const
+const persistedDigest = `sha256:${'a'.repeat(64)}` as const
 
 function event(seq: number, type: SessionEvent['type'], data: unknown): SessionEvent {
   return {
@@ -25,6 +27,40 @@ function event(seq: number, type: SessionEvent['type'], data: unknown): SessionE
     type,
     data,
   } as unknown as SessionEvent
+}
+
+function entityDefinitionBoundEvent(seq: number): EntityDefinitionBoundSessionEvent {
+  const identity = { agentId: 'chatroom.generalist', revision: persistedDigest }
+  return {
+    $schema: schema,
+    contract: 'cordisx.session-event/v1',
+    schemaVersion: 1,
+    sessionId: 'session-a',
+    seq,
+    time: Date.UTC(2026, 0, 1, 0, 0, seq),
+    type: 'entity/definition-bound',
+    ignorable: true,
+    data: {
+      source: 'entity-registry',
+      owner: { profileId: 'profile-a', installationId: 'installation-a', pluginId: 'chatroom' },
+      resolution: {
+        identity,
+        digest: persistedDigest,
+        definition: {
+          $schema: 'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/agent-definition.v1.schema.json',
+          contract: 'cordisx.agent-definition/v1',
+          schemaVersion: 1,
+          identity,
+          name: 'Persisted Generalist',
+          inherit: {
+            promptSections: 'none', rules: 'none', skills: 'none',
+            tools: 'none', mcpServers: 'none', runtimeDefaults: 'none',
+          },
+          promptSections: [{ sectionId: 'role', kind: 'role', text: 'Persisted role bytes.' }],
+        },
+      },
+    },
+  }
 }
 
 function page(afterSeq: number, snapshotSeq: number, events: readonly SessionEvent[]): SessionEventPage {
@@ -166,6 +202,33 @@ describe('SessionTraceStore', () => {
     expect(harness.unsubscribe).toHaveBeenCalledOnce()
   })
 
+  it('carries the persisted entity binding through the same snapshot, replay, and live cursor path', async () => {
+    const harness = sessionHarness({
+      snapshotSeq: 0,
+      pages: [page(-1, 0, [entityDefinitionBoundEvent(0)])],
+      replay: [event(1, 'turn/start', { turn: 1 })],
+    })
+    const store = new SessionTraceStore(harness.sessions, 'session-a', 50)
+    await store.settled()
+
+    expect(store.getSnapshot().events.map(item => item.type)).toEqual([
+      'entity/definition-bound',
+      'turn/start',
+    ])
+    expect(store.getSnapshot().events[0]?.definitionResolution?.definition.name).toBe('Persisted Generalist')
+
+    await harness.observer()!(subscriptionPage('live', 1, [
+      event(2, 'user/message', {
+        id: 'message-user', role: 'user', content: [{ type: 'text', text: 'Continue' }], source: { kind: 'user' },
+      }),
+    ]))
+    expect(store.getSnapshot()).toMatchObject({
+      events: [{ type: 'entity/definition-bound' }, { type: 'turn/start' }, { type: 'user/message' }],
+      range: { totalAvailable: 3 },
+    })
+    store.dispose()
+  })
+
   it('fails closed and clears rows on a sequence or generation fence violation', async () => {
     const harness = sessionHarness({
       snapshotSeq: 1,
@@ -245,6 +308,29 @@ describe('SessionTraceStore', () => {
 })
 
 describe('SessionEvent projection', () => {
+  it('attributes entity-backed history only to the Session-persisted definition binding', () => {
+    const projected = projectSessionEvent(entityDefinitionBoundEvent(0))
+
+    expect(projected).toMatchObject({
+      type: 'entity/definition-bound',
+      lane: 'injection',
+      definitionResolution: {
+        identity: { agentId: 'chatroom.generalist', revision: persistedDigest },
+        digest: persistedDigest,
+        definition: {
+          name: 'Persisted Generalist',
+          promptSections: [{ text: 'Persisted role bytes.' }],
+        },
+      },
+      payload: {
+        source: 'entity-registry',
+        resolution: { identity: { agentId: 'chatroom.generalist', revision: persistedDigest } },
+      },
+    })
+    expect(projected?.summary).toContain(`chatroom.generalist@${persistedDigest}`)
+    expect(projected?.summary).not.toContain('Latest local revision')
+  })
+
   it('projects every durable core variant from the formal v1 vocabulary', () => {
     const variants: readonly [SessionEvent['type'], unknown][] = [
       ['turn/start', { turn: 1 }],

@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { CordisXReactPageProps } from 'cordisx/contracts'
 import { UnavailableTraceStore } from '../src/unavailable-store.js'
 import { createTraceReactPage } from '../src/react-view.js'
-import type { TraceShowcaseStore } from '../src/types.js'
+import type { TraceEvent, TraceShowcaseStore } from '../src/types.js'
 
 vi.mock('cordisx/ui', async () => {
   const React = await import('react')
@@ -86,6 +86,20 @@ function availableStore(): TraceShowcaseStore {
   }
 }
 
+function eventStore(event: TraceEvent): TraceShowcaseStore {
+  const baseline = availableStore().getSnapshot()
+  const snapshot = Object.freeze({
+    ...baseline,
+    events: Object.freeze([event]),
+    range: Object.freeze({ loaded: 1, totalAvailable: 1, renderedLimit: 100 }),
+  })
+  return {
+    getSnapshot: () => snapshot,
+    subscribe: () => () => {},
+    dispose: () => {},
+  }
+}
+
 describe('Host-owned Agent Trace body', () => {
   it('renders SessionEvent rows, detail, and no Host chrome', async () => {
     const dom = new JSDOM('<body><div id="root"></div></body>')
@@ -113,6 +127,41 @@ describe('Host-owned Agent Trace body', () => {
 
     expect(dom.window.document.querySelector('[data-empty-state="Session events unavailable"]')?.textContent).toContain('session-service-unavailable')
     expect(dom.window.document.querySelectorAll('.cat-row')).toHaveLength(0)
+    root.unmount()
+  })
+
+  it('shows the Session-persisted entity identity, digest, and definition', async () => {
+    const dom = new JSDOM('<body><div id="root"></div></body>')
+    const digest = `sha256:${'a'.repeat(64)}` as const
+    const identity = { agentId: 'chatroom.generalist', revision: digest }
+    const store = eventStore(Object.freeze({
+      id: 'session:session-a:0', sessionId: 'session-a', seq: 0,
+      recordedAt: '2026-01-01T00:00:00.000Z', lane: 'injection',
+      type: 'entity/definition-bound', semanticType: 'entity/definition-bound',
+      summary: 'Session definition bound to Persisted Generalist.',
+      source: Object.freeze({ kind: 'session', id: 'session-a', label: 'Host Session authority' }),
+      definitionResolution: {
+        identity,
+        digest,
+        definition: {
+          $schema: 'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/agent-definition.v1.schema.json',
+          contract: 'cordisx.agent-definition/v1', schemaVersion: 1,
+          identity, name: 'Persisted Generalist',
+          inherit: {
+            promptSections: 'none', rules: 'none', skills: 'none',
+            tools: 'none', mcpServers: 'none', runtimeDefaults: 'none',
+          },
+        },
+      },
+    }))
+    const root = await mount(dom, store)
+
+    dom.window.document.querySelector<HTMLTableRowElement>('.cat-row')!.click()
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const detail = dom.window.document.querySelector('.cat-detail')?.textContent
+    expect(detail).toContain('chatroom.generalist')
+    expect(detail).toContain(digest)
+    expect(detail).toContain('Persisted Generalist')
     root.unmount()
   })
 

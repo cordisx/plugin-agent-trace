@@ -1,3 +1,5 @@
+import type { EntityDefinitionResolution } from '@cordisx/protocol/entities/v1'
+
 export type TraceLane = 'input' | 'model' | 'tools' | 'injection'
 export type TracePhase =
   | 'opened' | 'resumed' | 'started' | 'updated' | 'completed'
@@ -28,6 +30,7 @@ export interface TraceEvent {
   readonly messageId?: string
   readonly toolCallId?: string
   readonly contextId?: string
+  readonly definitionResolution?: EntityDefinitionResolution
   readonly payload?: unknown
 }
 
