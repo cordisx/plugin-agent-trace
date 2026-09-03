@@ -90,14 +90,17 @@ must never manufacture a durable cursor or ledger.
 Formal Host dependency:
 
 - repository: `CordisX/cordisx`;
-- main commit: `f72e3531abc4e9410ef8b6efd67ab9f77d4717b3`;
+- main commit: `d11df2e0d4a2557dc184f4fcec0b7cd8659e289b`;
 - pull requests: `https://github.com/cordisx/cordisx/pull/224` through
-  `https://github.com/cordisx/cordisx/pull/230`;
+  `https://github.com/cordisx/cordisx/pull/231`;
 - status: merged to remote main and pinned to Protocol
   `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
   Shell v4 terminal, permission/scope, no-check type, package allowlist, and
-  diff checks passed. The full Host repository remains red only at the
-  pre-existing Playground/Manager/Navigation baseline.
+  diff checks passed. The #231 composition focus passed 14/14 with CLI
+  `tsc --noCheck`. Its broad workflow stopped at
+  `check:clean-dev -> prepare:dev` on the pre-existing
+  Playground/Manager/Navigation TypeScript baseline; no #231-changed file was
+  in the diagnostic set and later broad gates did not run.
 
 The Host provides the permission-scoped `ctx.sessions` service and fences
 route, Session, plugin generation, permission, and connection replacement.
@@ -113,6 +116,13 @@ The actual `dev:ui` session-load path gives explicitly configured, enabled
 local entries the Host-verified local-development identity, provenance, and
 artifact generation required by that authorization rule. Packaged, remote,
 disabled, and non-Playground entries do not receive that provenance.
+
+The Playground secondary-embedding path omits inline sourcemaps only for those
+embedded local-development candidates. Ordinary local-development and real-App
+builds retain inline sourcemaps. Host-provided shared-React virtual inputs are
+excluded from filesystem watch/import graphs so Vite cannot reinterpret
+`cordisx/react`, `cordisx/ui`, or JSX-runtime virtual sources as absolute file
+imports; the real transitive source watch graph remains intact.
 
 ## Deferred owner actions
 
