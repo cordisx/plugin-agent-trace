@@ -90,9 +90,9 @@ must never manufacture a durable cursor or ledger.
 Formal Host dependency:
 
 - repository: `CordisX/cordisx`;
-- main commit: `eb68d7a314c922e07c6f422ad35ee24f581be1ac`;
+- main commit: `89b512aa79fcabe00a40d9636bc85496d9e5e8ec`;
 - pull requests: `https://github.com/cordisx/cordisx/pull/224` through
-  `https://github.com/cordisx/cordisx/pull/227`;
+  `https://github.com/cordisx/cordisx/pull/229`;
 - status: merged to remote main and pinned to Protocol
   `8891722a7735a3bd00bdd5315084b35b748f5e7f`; focused Agent/Session runtime,
   Shell v4 terminal, permission/scope, no-check type, package allowlist, and
@@ -103,6 +103,11 @@ The Host provides the permission-scoped `ctx.sessions` service and fences
 route, Session, plugin generation, permission, and connection replacement.
 Those terminal fences clear the Timeline and leave it honestly unavailable.
 This repository does not import or package the Host runtime implementation.
+Only a launcher-owned, ready local-development artifact in the Playground may
+receive the Host's no-dialog authorization; it still resolves and persists one
+exact Session scope behind a revocable generation/connection-fenced lease.
+Installed/production and ordinary Playground plugins retain interactive,
+fail-closed authorization.
 
 ## Deferred owner actions
 
