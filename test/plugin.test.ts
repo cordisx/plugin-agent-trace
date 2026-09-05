@@ -2,13 +2,13 @@ import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it, vi } from 'vitest'
 import {
-  TRACE_SESSION_PAGE_METADATA,
-  TRACE_SESSION_ROUTE_DEFINITION,
   configFrom,
   createTraceShowcaseStore,
   inject,
   installAgentTraceShowcase,
   manifest,
+  TRACE_SESSION_PAGE_METADATA,
+  TRACE_SESSION_ROUTE_DEFINITION,
 } from '../src/index.js'
 
 describe('plugin boundary', () => {
@@ -61,7 +61,9 @@ describe('plugin boundary', () => {
       pages: { register: pageRegister },
       routes: { register: routeRegister },
       slots: { register: vi.fn() },
-      effect: vi.fn((effect: () => () => void) => { disposers.push(effect()) }),
+      effect: vi.fn((effect: () => () => void) => {
+        disposers.push(effect())
+      }),
     }
 
     installAgentTraceShowcase(ctx as never, { timelineWindowSize: 100 }, { register: entryRegister })

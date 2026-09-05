@@ -11,14 +11,7 @@ import type {
   UserMessage,
 } from '@cordisx/protocol/sessions/v1'
 import type { EntityDefinitionResolution } from '@cordisx/protocol/entities/v1'
-import type {
-  TraceEvent,
-  TraceLane,
-  TracePhase,
-  TraceShowcaseStore,
-  TraceSnapshot,
-  TraceSource,
-} from './types.js'
+import type { TraceEvent, TraceLane, TracePhase, TraceShowcaseStore, TraceSnapshot, TraceSource } from './types.js'
 
 const SESSION_CONTRACT = 'cordisx.session-event/v1'
 const FIRST_CURSOR: SessionSeqCursor = -1
@@ -60,63 +53,98 @@ function toolSource(name: string): TraceSource {
 function lifecyclePhase(event: SessionEvent): TracePhase | undefined {
   switch (event.type) {
     case 'turn/start':
-    case 'step/start': return 'started'
+    case 'step/start':
+      return 'started'
     case 'turn/end':
-    case 'step/end': return 'completed'
-    case 'approval/asked': return 'requested'
-    case 'approval/decided': return event.data.outcome === 'unavailable' ? 'failed' : 'completed'
-    case 'session/end-seed': return 'closed'
-    default: return undefined
+    case 'step/end':
+      return 'completed'
+    case 'approval/asked':
+      return 'requested'
+    case 'approval/decided':
+      return event.data.outcome === 'unavailable' ? 'failed' : 'completed'
+    case 'session/end-seed':
+      return 'closed'
+    default:
+      return undefined
   }
 }
 
 function lane(event: SessionEvent): TraceLane {
   switch (event.type) {
-    case 'user/message': return 'input'
+    case 'user/message':
+      return 'input'
     case 'entity/definition-bound':
-    case 'agent/inbox/spliced': return 'injection'
+    case 'agent/inbox/spliced':
+      return 'injection'
     case 'tool/call':
     case 'tool/result':
     case 'approval/asked':
-    case 'approval/decided': return 'tools'
-    default: return 'model'
+    case 'approval/decided':
+      return 'tools'
+    default:
+      return 'model'
   }
 }
 
 function source(event: SessionEvent): TraceSource {
   switch (event.type) {
-    case 'user/message': return messageSource(event.sessionId, event.data)
-    case 'assistant/message': return modelSource(event.data.message.source.provider, event.data.message.source.model)
-    case 'request/header': return modelSource(event.data.header.config.provider, event.data.header.config.model)
-    case 'request/context': return modelSource(event.data.provider, event.data.model)
-    case 'tool/call': return toolSource(event.data.name)
-    case 'tool/result': return toolSource(event.data.message.source.callId)
-    default: return sessionSource(event.sessionId)
+    case 'user/message':
+      return messageSource(event.sessionId, event.data)
+    case 'assistant/message':
+      return modelSource(event.data.message.source.provider, event.data.message.source.model)
+    case 'request/header':
+      return modelSource(event.data.header.config.provider, event.data.header.config.model)
+    case 'request/context':
+      return modelSource(event.data.provider, event.data.model)
+    case 'tool/call':
+      return toolSource(event.data.name)
+    case 'tool/result':
+      return toolSource(event.data.message.source.callId)
+    default:
+      return sessionSource(event.sessionId)
   }
 }
 
 function summary(event: SessionEvent): string {
   switch (event.type) {
-    case 'turn/start': return `Turn ${event.data.turn} started.`
-    case 'turn/end': return `Turn ${event.data.turn} ended: ${event.data.reason.kind}.`
-    case 'step/start': return `Step ${event.data.step} started in turn ${event.data.turn}.`
-    case 'step/end': return `Step ${event.data.step} ended in turn ${event.data.turn}.`
-    case 'user/message': return textContent(event.data.content) ?? 'User message committed.'
-    case 'assistant/chunk': return `Assistant ${event.data.chunk.type} committed.`
-    case 'assistant/message': return textContent(event.data.message.content) ?? 'Assistant message committed.'
-    case 'tool/call': return `Tool call committed: ${event.data.name}.`
-    case 'tool/result': return `Tool result committed: ${event.data.message.source.callId}.`
-    case 'request/header': return `Request header committed for ${event.data.header.config.provider}/${event.data.header.config.model}.`
-    case 'request/context': return `Request context committed for ${event.data.provider}/${event.data.model}.`
-    case 'agent/inbox/spliced': return `Agent ${event.data.target} inbox changed.`
-    case 'approval/asked': return `Approval requested for ${event.data.toolName}.`
-    case 'approval/decided': return `Approval ${event.data.outcome}.`
+    case 'turn/start':
+      return `Turn ${event.data.turn} started.`
+    case 'turn/end':
+      return `Turn ${event.data.turn} ended: ${event.data.reason.kind}.`
+    case 'step/start':
+      return `Step ${event.data.step} started in turn ${event.data.turn}.`
+    case 'step/end':
+      return `Step ${event.data.step} ended in turn ${event.data.turn}.`
+    case 'user/message':
+      return textContent(event.data.content) ?? 'User message committed.'
+    case 'assistant/chunk':
+      return `Assistant ${event.data.chunk.type} committed.`
+    case 'assistant/message':
+      return textContent(event.data.message.content) ?? 'Assistant message committed.'
+    case 'tool/call':
+      return `Tool call committed: ${event.data.name}.`
+    case 'tool/result':
+      return `Tool result committed: ${event.data.message.source.callId}.`
+    case 'request/header':
+      return `Request header committed for ${event.data.header.config.provider}/${event.data.header.config.model}.`
+    case 'request/context':
+      return `Request context committed for ${event.data.provider}/${event.data.model}.`
+    case 'agent/inbox/spliced':
+      return `Agent ${event.data.target} inbox changed.`
+    case 'approval/asked':
+      return `Approval requested for ${event.data.toolName}.`
+    case 'approval/decided':
+      return `Approval ${event.data.outcome}.`
     case 'entity/definition-bound': {
       const { identity, digest, definition } = event.data.resolution
-      return `Session definition bound to ${definition.name ?? identity.agentId} (${identity.agentId}@${identity.revision}; ${digest}).`
+      return `Session definition bound to ${
+        definition.name ?? identity.agentId
+      } (${identity.agentId}@${identity.revision}; ${digest}).`
     }
-    case 'session/end-seed': return 'Persisted Session seed ended.'
-    default: return unknownEvent(event)
+    case 'session/end-seed':
+      return 'Persisted Session seed ended.'
+    default:
+      return unknownEvent(event)
   }
 }
 
@@ -136,8 +164,10 @@ function turnId(event: SessionEvent): string | undefined {
     case 'assistant/chunk':
     case 'assistant/message':
     case 'tool/call':
-    case 'tool/result': return String(event.data.turn)
-    default: return undefined
+    case 'tool/result':
+      return String(event.data.turn)
+    default:
+      return undefined
   }
 }
 
@@ -148,8 +178,10 @@ function stepId(event: SessionEvent): string | undefined {
     case 'assistant/chunk':
     case 'assistant/message':
     case 'tool/call':
-    case 'tool/result': return String(event.data.step)
-    default: return undefined
+    case 'tool/result':
+      return String(event.data.step)
+    default:
+      return undefined
   }
 }
 
@@ -168,15 +200,15 @@ export function projectSessionEvent(event: SessionEvent): TraceEvent | undefined
   const messageId = event.type === 'user/message'
     ? event.data.id
     : event.type === 'assistant/message'
-      ? event.data.message.id
-      : event.type === 'tool/result'
-        ? event.data.message.id
-        : undefined
+    ? event.data.message.id
+    : event.type === 'tool/result'
+    ? event.data.message.id
+    : undefined
   const toolCallId = event.type === 'tool/call'
     ? event.data.callId
     : event.type === 'tool/result'
-      ? event.data.message.source.callId
-      : undefined
+    ? event.data.message.source.callId
+    : undefined
   const definitionResolution: EntityDefinitionResolution | undefined = event.type === 'entity/definition-bound'
     ? event.data.resolution
     : undefined
@@ -236,7 +268,9 @@ export class SessionTraceStore implements TraceShowcaseStore {
     this.startPromise = this.start()
   }
 
-  getSnapshot(): TraceSnapshot { return this.snapshot }
+  getSnapshot(): TraceSnapshot {
+    return this.snapshot
+  }
 
   subscribe(listener: () => void): () => void {
     if (this.disposed) return () => {}
@@ -258,7 +292,7 @@ export class SessionTraceStore implements TraceShowcaseStore {
   }
 
   private notify(): void {
-    if (!this.disposed) for (const listener of this.listeners) listener()
+    if (!this.disposed) { for (const listener of this.listeners) listener() }
   }
 
   private fail(diagnostic: string): void {
@@ -277,7 +311,9 @@ export class SessionTraceStore implements TraceShowcaseStore {
         mode: 'available',
         completeness: 'partial',
         contractVersion: SESSION_CONTRACT,
-        diagnostics: Object.freeze([`Showing the latest ${this.windowSize} permission-filtered durable Session facts.`]),
+        diagnostics: Object.freeze([
+          `Showing the latest ${this.windowSize} permission-filtered durable Session facts.`,
+        ]),
         readOnly: true,
       }),
       range: Object.freeze({
@@ -305,10 +341,12 @@ export class SessionTraceStore implements TraceShowcaseStore {
   }
 
   private acceptReadPage(page: SessionEventPage, snapshotSeq: SessionSeqCursor): void {
-    if (page.sessionId !== this.sessionId
+    if (
+      page.sessionId !== this.sessionId
       || page.sessionGeneration !== this.sessionGeneration
       || page.afterSeq !== this.cursor
-      || page.snapshotSeq !== snapshotSeq) {
+      || page.snapshotSeq !== snapshotSeq
+    ) {
       throw new SessionProjectionError('session-read-fence-violation')
     }
     this.acceptEvents(page.events)
@@ -326,9 +364,11 @@ export class SessionTraceStore implements TraceShowcaseStore {
   ): void {
     if (this.disposed || this.subscription !== subscription) return
     this.subscription = undefined
-    if (closed.sessionId !== this.sessionId
+    if (
+      closed.sessionId !== this.sessionId
       || closed.sessionGeneration !== this.sessionGeneration
-      || closed.subscriptionGeneration !== this.subscriptionGeneration) {
+      || closed.subscriptionGeneration !== this.subscriptionGeneration
+    ) {
       this.fail('session-subscription-close-fence-violation')
       return
     }
@@ -350,14 +390,16 @@ export class SessionTraceStore implements TraceShowcaseStore {
   private acceptSubscriptionPage(page: SessionSubscriptionPage): void {
     if (this.disposed) return
     const replayThrough = this.replayThrough ?? page.replayThrough
-    if (page.sessionId !== this.sessionId
+    if (
+      page.sessionId !== this.sessionId
       || page.sessionGeneration !== this.sessionGeneration
       || (this.subscriptionGeneration !== undefined && page.subscriptionGeneration !== this.subscriptionGeneration)
       || (this.replayThrough !== undefined && page.replayThrough !== this.replayThrough)
       || (this.phase === 'live' && page.phase !== 'live')
       || (page.phase === 'replay' && page.events.some(event => event.seq > replayThrough))
       || (page.phase === 'live' && this.phase === 'replay' && this.cursor !== replayThrough)
-      || (page.phase === 'live' && page.events.some(event => event.seq <= replayThrough))) {
+      || (page.phase === 'live' && page.events.some(event => event.seq <= replayThrough))
+    ) {
       this.fail('session-subscription-fence-violation')
       throw new SessionProjectionError('session-subscription-fence-violation')
     }
@@ -390,9 +432,11 @@ export class SessionTraceStore implements TraceShowcaseStore {
         return
       }
       const snapshot = snapshotResult.snapshot
-      if (snapshot.sessionId !== this.sessionId
+      if (
+        snapshot.sessionId !== this.sessionId
         || snapshot.sessionGeneration !== session.generation
-        || snapshot.header.id !== this.sessionId) {
+        || snapshot.header.id !== this.sessionId
+      ) {
         throw new SessionProjectionError('session-snapshot-fence-violation')
       }
       while (this.cursor < snapshot.snapshotSeq) {
@@ -417,11 +461,14 @@ export class SessionTraceStore implements TraceShowcaseStore {
         return
       }
       const subscription = subscribeResult.subscription
-      if (subscription.sessionId !== this.sessionId
+      if (
+        subscription.sessionId !== this.sessionId
         || subscription.sessionGeneration !== this.sessionGeneration
-        || (this.subscriptionGeneration !== undefined && subscription.subscriptionGeneration !== this.subscriptionGeneration)
+        || (this.subscriptionGeneration !== undefined
+          && subscription.subscriptionGeneration !== this.subscriptionGeneration)
         || (this.replayThrough !== undefined && subscription.replayThrough !== this.replayThrough)
-        || this.cursor < subscription.replayThrough) {
+        || this.cursor < subscription.replayThrough
+      ) {
         await subscription.unsubscribe()
         throw new SessionProjectionError('session-subscription-handle-fence-violation')
       }
