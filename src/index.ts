@@ -9,7 +9,11 @@ import {
   type CordisXPluginPresentation,
   type CordisXRouteDefinitionV2,
 } from 'cordisx/contracts'
-import { STRUCTURED_SESSION_HEADER_ENTRY, TRACE_SESSION_HEADER_ACTION, type SessionHeaderEntryAdapter } from './entry.js'
+import {
+  type SessionHeaderEntryAdapter,
+  STRUCTURED_SESSION_HEADER_ENTRY,
+  TRACE_SESSION_HEADER_ACTION,
+} from './entry.js'
 import { SessionTraceStore } from './session-store.js'
 import { UnavailableTraceStore } from './unavailable-store.js'
 import { createTraceReactPage } from './react-view.js'
@@ -22,31 +26,40 @@ function text(key: string, fallback: string) {
   return Object.freeze({ namespace: 'agent-trace-showcase', key, fallback } as const)
 }
 
-export const presentation = Object.freeze({
-  name: text('plugin.name', 'Agent Trace Showcase'),
-  description: text('plugin.description', 'Read-only Timeline of Host-projected Agent session events.'),
-} satisfies CordisXPluginPresentation)
+export const presentation = Object.freeze(
+  {
+    name: text('plugin.name', 'Agent Trace Showcase'),
+    description: text('plugin.description', 'Read-only Timeline of Host-projected Agent session events.'),
+  } satisfies CordisXPluginPresentation,
+)
 
-export const TRACE_SESSION_PAGE_METADATA = Object.freeze({
-  $schema: CORDISX_PAGE_SCHEMA_V3,
-  schemaVersion: 3,
-  id: 'session.timeline',
-  title: text('page.timeline.title', 'Agent Trace Timeline'),
-  description: text('page.timeline.description', 'Inspect the read-only Host projection for the active Agent session.'),
-  icon: 'host:history',
-  chrome: 'body-only',
-} satisfies CordisXPageMetadataV3)
+export const TRACE_SESSION_PAGE_METADATA = Object.freeze(
+  {
+    $schema: CORDISX_PAGE_SCHEMA_V3,
+    schemaVersion: 3,
+    id: 'session.timeline',
+    title: text('page.timeline.title', 'Agent Trace Timeline'),
+    description: text(
+      'page.timeline.description',
+      'Inspect the read-only Host projection for the active Agent session.',
+    ),
+    icon: 'host:history',
+    chrome: 'body-only',
+  } satisfies CordisXPageMetadataV3,
+)
 
-export const TRACE_SESSION_ROUTE_DEFINITION = Object.freeze({
-  $schema: CORDISX_ROUTE_SCHEMA_V2,
-  schemaVersion: 2,
-  id: 'session.timeline',
-  path: '/sessions/:sessionId/agent-trace',
-  outlet: 'session.content',
-  page: 'session.timeline',
-  title: text('route.timeline.title', 'Open Agent Trace'),
-  description: text('route.timeline.description', 'Open the read-only Agent Trace Timeline for the active session.'),
-} satisfies CordisXRouteDefinitionV2<'session.content'>)
+export const TRACE_SESSION_ROUTE_DEFINITION = Object.freeze(
+  {
+    $schema: CORDISX_ROUTE_SCHEMA_V2,
+    schemaVersion: 2,
+    id: 'session.timeline',
+    path: '/sessions/:sessionId/agent-trace',
+    outlet: 'session.content',
+    page: 'session.timeline',
+    title: text('route.timeline.title', 'Open Agent Trace'),
+    description: text('route.timeline.description', 'Open the read-only Agent Trace Timeline for the active session.'),
+  } satisfies CordisXRouteDefinitionV2<'session.content'>,
+)
 
 export interface Config {
   readonly timelineWindowSize: number
@@ -59,44 +72,59 @@ export const Config = Schema.object({
 
 export const configApplies = 'restart' as const
 
-const CORDISX_PLUGIN_MANIFEST_SCHEMA_V5 = 'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-manifest.v5.schema.json' as const
-const SESSION_ROUTE_SCOPE = Object.freeze({
-  kind: 'host-route-param',
-  routeId: TRACE_SESSION_ROUTE_DEFINITION.id,
-  param: 'sessionId',
-} as const satisfies HostRouteSessionScopeBinding)
+const CORDISX_PLUGIN_MANIFEST_SCHEMA_V5 =
+  'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-manifest.v5.schema.json' as const
+const SESSION_ROUTE_SCOPE = Object.freeze(
+  {
+    kind: 'host-route-param',
+    routeId: TRACE_SESSION_ROUTE_DEFINITION.id,
+    param: 'sessionId',
+  } as const satisfies HostRouteSessionScopeBinding,
+)
 
 function sessionCapability(name: 'sessions.get' | 'sessions.read' | 'sessions.subscribe') {
-  return Object.freeze({
-    name,
-    required: false,
-    scope: Object.freeze({ sessionIds: SESSION_ROUTE_SCOPE }),
-    rationale: Object.freeze({
-      title: text('permission.sessions.title', 'Read this Agent session'),
-      description: text('permission.sessions.description', 'Read permission-filtered durable events for the Agent session in the active Host route.'),
-      feature: text('permission.sessions.feature', 'Shows the read-only Agent Trace Timeline.'),
-      deniedBehavior: text('permission.sessions.denied', 'The Timeline stays empty and reports that live Session data is unavailable.'),
-    }),
-    security: Object.freeze({
-      dataUse: 'ephemeral',
-      retention: 'runtime',
-      externalTransfer: false,
-    } as const),
-  } as const)
+  return Object.freeze(
+    {
+      name,
+      required: false,
+      scope: Object.freeze({ sessionIds: SESSION_ROUTE_SCOPE }),
+      rationale: Object.freeze({
+        title: text('permission.sessions.title', 'Read this Agent session'),
+        description: text(
+          'permission.sessions.description',
+          'Read permission-filtered durable events for the Agent session in the active Host route.',
+        ),
+        feature: text('permission.sessions.feature', 'Shows the read-only Agent Trace Timeline.'),
+        deniedBehavior: text(
+          'permission.sessions.denied',
+          'The Timeline stays empty and reports that live Session data is unavailable.',
+        ),
+      }),
+      security: Object.freeze(
+        {
+          dataUse: 'ephemeral',
+          retention: 'runtime',
+          externalTransfer: false,
+        } as const,
+      ),
+    } as const,
+  )
 }
 
-export const manifest = Object.freeze({
-  $schema: CORDISX_PLUGIN_MANIFEST_SCHEMA_V5,
-  schemaVersion: 5,
-  id: 'agent-trace-showcase',
-  name: 'Agent Trace Showcase',
-  capabilities: Object.freeze([
-    sessionCapability('sessions.get'),
-    sessionCapability('sessions.read'),
-    sessionCapability('sessions.subscribe'),
-  ]),
-  services: Object.freeze([]),
-} as const)
+export const manifest = Object.freeze(
+  {
+    $schema: CORDISX_PLUGIN_MANIFEST_SCHEMA_V5,
+    schemaVersion: 5,
+    id: 'agent-trace-showcase',
+    name: 'Agent Trace Showcase',
+    capabilities: Object.freeze([
+      sessionCapability('sessions.get'),
+      sessionCapability('sessions.read'),
+      sessionCapability('sessions.subscribe'),
+    ]),
+    services: Object.freeze([]),
+  } as const,
+)
 
 export type AgentTraceShowcaseConfig = Config
 
@@ -109,8 +137,12 @@ export function createTraceShowcaseStore(
   routeSessionId?: string,
   sessions?: SessionRegistry,
 ): TraceShowcaseStore {
-  if (routeSessionId === undefined) return new UnavailableTraceStore(undefined, config.timelineWindowSize, 'host-session-id-unavailable')
-  if (sessions === undefined) return new UnavailableTraceStore(routeSessionId, config.timelineWindowSize, 'session-service-unavailable')
+  if (routeSessionId === undefined) {
+    return new UnavailableTraceStore(undefined, config.timelineWindowSize, 'host-session-id-unavailable')
+  }
+  if (sessions === undefined) {
+    return new UnavailableTraceStore(routeSessionId, config.timelineWindowSize, 'session-service-unavailable')
+  }
   return new SessionTraceStore(sessions, routeSessionId, config.timelineWindowSize)
 }
 
@@ -123,7 +155,9 @@ export function installAgentTraceShowcase(
 ): void {
   const config = configFrom(rawConfig)
   ctx.i18n.define({
-    namespace: 'agent-trace-showcase', locale: 'en', default: true,
+    namespace: 'agent-trace-showcase',
+    locale: 'en',
+    default: true,
     messages: {
       'plugin.name': 'Agent Trace Showcase',
       'plugin.description': 'Read-only Timeline of Host-projected Agent session events.',
@@ -133,13 +167,15 @@ export function installAgentTraceShowcase(
       'page.timeline.title': 'Agent Trace Timeline',
       'page.timeline.description': 'Inspect the read-only Host projection for the active Agent session.',
       'permission.sessions.title': 'Read this Agent session',
-      'permission.sessions.description': 'Read permission-filtered durable events for the Agent session in the active Host route.',
+      'permission.sessions.description':
+        'Read permission-filtered durable events for the Agent session in the active Host route.',
       'permission.sessions.feature': 'Shows the read-only Agent Trace Timeline.',
       'permission.sessions.denied': 'The Timeline stays empty and reports that live Session data is unavailable.',
     },
   })
   ctx.i18n.define({
-    namespace: 'agent-trace-showcase', locale: 'zh-CN',
+    namespace: 'agent-trace-showcase',
+    locale: 'zh-CN',
     messages: {
       'plugin.name': 'Agent Trace 展示',
       'plugin.description': '查看 Host 投影的只读 Agent 会话时间线。',
@@ -157,7 +193,9 @@ export function installAgentTraceShowcase(
   ctx.pages.register(
     TRACE_SESSION_PAGE_METADATA,
     defineReactPage(createTraceReactPage(sessionId => {
-      if (sessionId === undefined) return new UnavailableTraceStore(undefined, config.timelineWindowSize, 'host-session-id-unavailable')
+      if (sessionId === undefined) {
+        return new UnavailableTraceStore(undefined, config.timelineWindowSize, 'host-session-id-unavailable')
+      }
       return createTraceShowcaseStore(config, sessionId, ctx.sessions)
     })),
   )
@@ -172,4 +210,8 @@ export function apply(ctx: AgentTraceContext, config: unknown): void {
 export type * from './types.js'
 export { projectSessionEvent, SessionTraceStore } from './session-store.js'
 export { UnavailableTraceStore } from './unavailable-store.js'
-export { STRUCTURED_SESSION_HEADER_ENTRY, TRACE_SESSION_HEADER_ACTION, type SessionHeaderEntryAdapter } from './entry.js'
+export {
+  type SessionHeaderEntryAdapter,
+  STRUCTURED_SESSION_HEADER_ENTRY,
+  TRACE_SESSION_HEADER_ACTION,
+} from './entry.js'

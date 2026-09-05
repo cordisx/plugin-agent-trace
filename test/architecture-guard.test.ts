@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 
 async function sourceText(): Promise<string> {
@@ -9,29 +9,33 @@ async function sourceText(): Promise<string> {
 describe('architecture guard', () => {
   it('contains no legacy service, concrete loop, private Host, DOM, or raw bridge dependency', async () => {
     const source = await sourceText()
-    for (const forbidden of [
-      'ctx.agentEvents',
-      'ctx.agentHistory',
-      'ctx.agentLoop',
-      'ctx.entities',
-      'agentEvents',
-      'agentHistory',
-      'electronBridge',
-      'app-server',
-      'tdesign',
-      'TDesign',
-      'querySelector',
-      'getElementById',
-      'packages/cli/src',
-      'packages/host',
-      'EntityRegistry',
-    ]) expect(source).not.toContain(forbidden)
+    for (
+      const forbidden of [
+        'ctx.agentEvents',
+        'ctx.agentHistory',
+        'ctx.agentLoop',
+        'ctx.entities',
+        'agentEvents',
+        'agentHistory',
+        'electronBridge',
+        'app-server',
+        'tdesign',
+        'TDesign',
+        'querySelector',
+        'getElementById',
+        'packages/cli/src',
+        'packages/host',
+        'EntityRegistry',
+      ]
+    ) expect(source).not.toContain(forbidden)
   })
 
   it('uses only public CordisX package entrypoints', async () => {
     const source = await sourceText()
     const imports = [...source.matchAll(/from ['"]([^'"]+)['"]/g)].map(match => match[1])
     const cordisxImports = imports.filter(value => value?.startsWith('cordisx'))
-    expect(cordisxImports.every(value => ['cordisx/react', 'cordisx/ui', 'cordisx/contracts'].includes(value!))).toBe(true)
+    expect(cordisxImports.every(value => ['cordisx/react', 'cordisx/ui', 'cordisx/contracts'].includes(value!))).toBe(
+      true,
+    )
   })
 })

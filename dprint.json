@@ -1,0 +1,32 @@
+{
+  "indentWidth": 2,
+  "newLineKind": "lf",
+  "typescript": {
+    "module.sortImportDeclarations": "maintain",
+    "module.sortExportDeclarations": "maintain",
+    "quoteStyle": "preferSingle",
+    "jsx.quoteStyle": "preferDouble",
+    "semiColons": "asi"
+  },
+  "markdown": {
+    "textWrap": "maintain"
+  },
+  "includes": [
+    "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,md,markdown}"
+  ],
+  // Exclude npm-generated lock and build outputs; maintained source and tests remain included.
+  "excludes": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "package-lock.json",
+    // Byte-addressed security artifacts: do not rewrite manifests or their recorded digests.
+    "runtime-manifest.json",
+    "cordisx.plugin.json"
+  ],
+  "plugins": [
+    "npm:@dprint/typescript@0.96.1",
+    "npm:@dprint/json@0.23.0",
+    "npm:@dprint/markdown@0.23.3"
+  ]
+}

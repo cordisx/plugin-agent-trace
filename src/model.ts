@@ -7,7 +7,9 @@ export interface TraceFilters {
 }
 
 export const EMPTY_FILTERS: TraceFilters = Object.freeze({
-  lane: 'all', type: 'all', phase: 'all',
+  lane: 'all',
+  type: 'all',
+  phase: 'all',
 })
 
 export function filterTraceEvents(events: readonly TraceEvent[], filters: TraceFilters): readonly TraceEvent[] {
@@ -19,9 +21,11 @@ export function filterTraceEvents(events: readonly TraceEvent[], filters: TraceF
 }
 
 export function orderTraceEvents(events: readonly TraceEvent[], order: 'sequence' | 'time'): readonly TraceEvent[] {
-  return [...events].sort(order === 'sequence'
-    ? (left, right) => left.seq - right.seq
-    : (left, right) => Date.parse(left.recordedAt) - Date.parse(right.recordedAt) || left.seq - right.seq)
+  return [...events].sort(
+    order === 'sequence'
+      ? (left, right) => left.seq - right.seq
+      : (left, right) => Date.parse(left.recordedAt) - Date.parse(right.recordedAt) || left.seq - right.seq,
+  )
 }
 
 export interface TraceTurnGroup {

@@ -8,14 +8,20 @@ export class UnavailableTraceStore implements TraceShowcaseStore {
       ...(sessionId === undefined ? {} : { sessionId }),
       events: Object.freeze([]),
       status: Object.freeze({
-        mode: 'unavailable', completeness: 'unavailable', diagnostics: Object.freeze([diagnostic]),
+        mode: 'unavailable',
+        completeness: 'unavailable',
+        diagnostics: Object.freeze([diagnostic]),
         readOnly: true,
       }),
       range: Object.freeze({ loaded: 0, renderedLimit: windowSize }),
     })
   }
 
-  getSnapshot(): TraceSnapshot { return this.snapshot }
-  subscribe(): () => void { return () => {} }
+  getSnapshot(): TraceSnapshot {
+    return this.snapshot
+  }
+  subscribe(): () => void {
+    return () => {}
+  }
   dispose(): void {}
 }

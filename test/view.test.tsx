@@ -10,16 +10,29 @@ import type { TraceEvent, TraceShowcaseStore } from '../src/types.js'
 vi.mock('cordisx/ui', async () => {
   const React = await import('react')
   return {
-    Button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => React.createElement('button', props, children),
-    EmptyState: ({ title, description }: { title: string; description: string }) => React.createElement('section', { 'data-empty-state': title }, description),
+    Button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) =>
+      React.createElement('button', props, children),
+    EmptyState: ({ title, description }: { title: string; description: string }) =>
+      React.createElement('section', { 'data-empty-state': title }, description),
     Select: ({ options, onChange, ...props }: {
       options: ReadonlyArray<{ value: string; label: string }>
       onChange(value: string): void
       value: string
       'aria-label': string
-    }) => React.createElement('select', { ...props, onChange: (event: React.ChangeEvent<HTMLSelectElement>) => onChange(event.currentTarget.value) },
-      options.map(option => React.createElement('option', { key: option.value, value: option.value }, option.label))),
-    Stack: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement> & { direction?: string; gap?: string; align?: string; wrap?: boolean }) => {
+    }) =>
+      React.createElement(
+        'select',
+        { ...props, onChange: (event: React.ChangeEvent<HTMLSelectElement>) => onChange(event.currentTarget.value) },
+        options.map(option => React.createElement('option', { key: option.value, value: option.value }, option.label)),
+      ),
+    Stack: (
+      { children, ...props }: React.HTMLAttributes<HTMLDivElement> & {
+        direction?: string
+        gap?: string
+        align?: string
+        wrap?: boolean
+      },
+    ) => {
       const { direction: _direction, gap: _gap, align: _align, wrap: _wrap, ...divProps } = props
       return React.createElement('div', divProps, children)
     },
@@ -56,17 +69,29 @@ function availableStore(): TraceShowcaseStore {
     sessionId: 'session-a',
     events: Object.freeze([
       Object.freeze({
-        id: 'session:session-a:0', sessionId: 'session-a', seq: 0,
-        recordedAt: '2026-01-01T00:00:00.000Z', lane: 'model' as const,
-        type: 'turn/start', semanticType: 'turn/start', phase: 'started' as const,
-        summary: 'Turn 1 started.', turnId: '1',
+        id: 'session:session-a:0',
+        sessionId: 'session-a',
+        seq: 0,
+        recordedAt: '2026-01-01T00:00:00.000Z',
+        lane: 'model' as const,
+        type: 'turn/start',
+        semanticType: 'turn/start',
+        phase: 'started' as const,
+        summary: 'Turn 1 started.',
+        turnId: '1',
         source: Object.freeze({ kind: 'session' as const, id: 'session-a', label: 'Session authority' }),
       }),
       Object.freeze({
-        id: 'session:session-a:1', sessionId: 'session-a', seq: 1,
-        recordedAt: '2026-01-01T00:00:01.000Z', lane: 'model' as const,
-        type: 'turn/end', semanticType: 'turn/end', phase: 'completed' as const,
-        summary: 'Turn 1 ended.', turnId: '1',
+        id: 'session:session-a:1',
+        sessionId: 'session-a',
+        seq: 1,
+        recordedAt: '2026-01-01T00:00:01.000Z',
+        lane: 'model' as const,
+        type: 'turn/end',
+        semanticType: 'turn/end',
+        phase: 'completed' as const,
+        summary: 'Turn 1 ended.',
+        turnId: '1',
         source: Object.freeze({ kind: 'session' as const, id: 'session-a', label: 'Session authority' }),
       }),
     ]),
@@ -125,7 +150,9 @@ describe('Host-owned Agent Trace body', () => {
     const store = new UnavailableTraceStore('session-a', 100, 'session-service-unavailable')
     const root = await mount(dom, store)
 
-    expect(dom.window.document.querySelector('[data-empty-state="Session events unavailable"]')?.textContent).toContain('session-service-unavailable')
+    expect(dom.window.document.querySelector('[data-empty-state="Session events unavailable"]')?.textContent).toContain(
+      'session-service-unavailable',
+    )
     expect(dom.window.document.querySelectorAll('.cat-row')).toHaveLength(0)
     root.unmount()
   })
@@ -135,21 +162,32 @@ describe('Host-owned Agent Trace body', () => {
     const digest = `sha256:${'a'.repeat(64)}` as const
     const identity = { agentId: 'chatroom.generalist', revision: digest }
     const store = eventStore(Object.freeze({
-      id: 'session:session-a:0', sessionId: 'session-a', seq: 0,
-      recordedAt: '2026-01-01T00:00:00.000Z', lane: 'injection',
-      type: 'entity/definition-bound', semanticType: 'entity/definition-bound',
+      id: 'session:session-a:0',
+      sessionId: 'session-a',
+      seq: 0,
+      recordedAt: '2026-01-01T00:00:00.000Z',
+      lane: 'injection',
+      type: 'entity/definition-bound',
+      semanticType: 'entity/definition-bound',
       summary: 'Session definition bound to Persisted Generalist.',
       source: Object.freeze({ kind: 'session', id: 'session-a', label: 'Host Session authority' }),
       definitionResolution: {
         identity,
         digest,
         definition: {
-          $schema: 'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/agent-definition.v1.schema.json',
-          contract: 'cordisx.agent-definition/v1', schemaVersion: 1,
-          identity, name: 'Persisted Generalist',
+          $schema:
+            'https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/agent-definition.v1.schema.json',
+          contract: 'cordisx.agent-definition/v1',
+          schemaVersion: 1,
+          identity,
+          name: 'Persisted Generalist',
           inherit: {
-            promptSections: 'none', rules: 'none', skills: 'none',
-            tools: 'none', mcpServers: 'none', runtimeDefaults: 'none',
+            promptSections: 'none',
+            rules: 'none',
+            skills: 'none',
+            tools: 'none',
+            mcpServers: 'none',
+            runtimeDefaults: 'none',
           },
         },
       },

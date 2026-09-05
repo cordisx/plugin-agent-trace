@@ -57,9 +57,9 @@ unavailable, the Timeline shows no rows and never falls back to another source.
 
 ## Configuration
 
-| Setting | Default | Values | Meaning |
-| --- | --- | --- | --- |
-| `timelineWindowSize` | `500` | 50-500 | Bound the in-memory and rendered Timeline window. |
+| Setting              | Default | Values | Meaning                                           |
+| -------------------- | ------- | ------ | ------------------------------------------------- |
+| `timelineWindowSize` | `500`   | 50-500 | Bound the in-memory and rendered Timeline window. |
 
 Configuration applies on restart so the owning Cordis fiber replaces page
 state cleanly. Page unmount and plugin deactivation own their disposers.

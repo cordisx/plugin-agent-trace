@@ -11,8 +11,16 @@ export const TRACE_SESSION_HEADER_ACTION = Object.freeze({
   group: 'action' as const,
   order: 10 as const,
   item: Object.freeze({
-    label: Object.freeze({ namespace: 'agent-trace-showcase', key: 'action.open', fallback: 'Open Agent Trace Timeline' }),
-    ariaLabel: Object.freeze({ namespace: 'agent-trace-showcase', key: 'action.open', fallback: 'Open Agent Trace Timeline' }),
+    label: Object.freeze({
+      namespace: 'agent-trace-showcase',
+      key: 'action.open',
+      fallback: 'Open Agent Trace Timeline',
+    }),
+    ariaLabel: Object.freeze({
+      namespace: 'agent-trace-showcase',
+      key: 'action.open',
+      fallback: 'Open Agent Trace Timeline',
+    }),
     icon: 'host:history' as const,
     route: Object.freeze({ id: 'session.timeline' as const }),
     routeBehavior: 'toggle' as const,
@@ -24,10 +32,11 @@ export interface SessionHeaderEntryAdapter {
 }
 
 export const STRUCTURED_SESSION_HEADER_ENTRY: SessionHeaderEntryAdapter = Object.freeze({
-  register: (ctx: Context, contribution: typeof TRACE_SESSION_HEADER_ACTION) => ctx.slots.register({
-    name: contribution.surface,
-    id: contribution.id,
-    group: contribution.group,
-    order: contribution.order,
-  }, contribution.item),
+  register: (ctx: Context, contribution: typeof TRACE_SESSION_HEADER_ACTION) =>
+    ctx.slots.register({
+      name: contribution.surface,
+      id: contribution.id,
+      group: contribution.group,
+      order: contribution.order,
+    }, contribution.item),
 })

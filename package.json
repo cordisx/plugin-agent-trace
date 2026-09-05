@@ -21,7 +21,9 @@
     "test": "vitest run",
     "naming:check": "node scripts/check-public-naming.mjs",
     "check": "npm run naming:check && npm run typecheck && npm run build && npm test && npm run naming:check && npm run pack:check",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run",
+    "format": "dprint fmt",
+    "format:check": "dprint check"
   },
   "dependencies": {
     "@deepseek-ai/cordis": "4.0.1",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@cordisx/protocol": "github:cordisx/cordisx-protocol#c96c290697f9e802a68c6d3bb094fd27d8d00d1e",
+    "dprint": "0.57.1",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
