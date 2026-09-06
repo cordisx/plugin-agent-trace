@@ -32,3 +32,13 @@
   and unavailable states.
 - Run `npm run check`, `npm pack --dry-run`, and `git diff --check` before a
   checkpoint commit.
+
+## Shared quality configuration
+
+The local dprint and ESLint entry points consume an exact formal
+[Mono quality configuration](https://github.com/cordisx/cordisxmono/blob/c63c2e8c2ba7e11502934a52ad2ce3734e804cdc/.agents/docs/quality-tooling.md).
+The Shared quality configuration CI job checks the installed configuration and
+tracked-file coverage; inspect its report for excluded paths.
+`npm run lint:source` runs the full source policy as a blocking CI step.
+Configuration coverage and full-source lint are separate checks.
+Update the dependency, lock, formatter reference and CI provider SHA together.
