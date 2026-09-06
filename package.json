@@ -23,7 +23,9 @@
     "check": "npm run naming:check && npm run typecheck && npm run build && npm test && npm run naming:check && npm run pack:check",
     "pack:check": "npm pack --dry-run",
     "format": "dprint fmt",
-    "format:check": "dprint check"
+    "format:check": "dprint check",
+    "lint:source": "eslint .",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@deepseek-ai/cordis": "4.0.1",
@@ -35,7 +37,10 @@
     "dprint": "0.57.1",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@cordisx/eslint-config": "github:cordisx/cordisxmono#c63c2e8c2ba7e11502934a52ad2ce3734e804cdc",
+    "eslint": "9.39.4",
+    "@typescript-eslint/parser": "8.69.0"
   },
   "engines": {
     "node": ">=22.19"

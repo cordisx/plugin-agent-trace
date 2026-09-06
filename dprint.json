@@ -1,16 +1,4 @@
 {
-  "indentWidth": 2,
-  "newLineKind": "lf",
-  "typescript": {
-    "module.sortImportDeclarations": "maintain",
-    "module.sortExportDeclarations": "maintain",
-    "quoteStyle": "preferSingle",
-    "jsx.quoteStyle": "preferDouble",
-    "semiColons": "asi"
-  },
-  "markdown": {
-    "textWrap": "maintain"
-  },
   "includes": [
     "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,md,markdown}"
   ],
@@ -24,9 +12,8 @@
     "runtime-manifest.json",
     "cordisx.plugin.json"
   ],
-  "plugins": [
-    "npm:@dprint/typescript@0.96.1",
-    "npm:@dprint/json@0.23.0",
-    "npm:@dprint/markdown@0.23.3"
-  ]
+  "extends": "https://raw.githubusercontent.com/cordisx/cordisxmono/c63c2e8c2ba7e11502934a52ad2ce3734e804cdc/tooling/quality/dprint/code.json",
+  "typescript": {
+    "jsx.quoteStyle": "preferDouble"
+  }
 }
