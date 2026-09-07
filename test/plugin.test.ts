@@ -90,6 +90,6 @@ describe('package manifest', () => {
       digest: `sha256:${createHash('sha256').update(runtimeManifestText).digest('hex')}`,
     })
     expect(runtimeManifest).toEqual(manifest)
-    expect(packageManifest.canonicalSource).toBe('https://github.com/CordisX/plugin-agent-trace')
+    expect(packageManifest.canonicalSource).toBe('https://github.com/cordisx/plugin-agent-trace')
   })
 })

@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "entry": "./dist/index.js",
   "readme": "./README.md",
-  "canonicalSource": "https://github.com/CordisX/plugin-agent-trace",
+  "canonicalSource": "https://github.com/cordisx/plugin-agent-trace",
   "distribution": {
     "mode": "explicit-local-v1",
     "signature": "unsupported"
