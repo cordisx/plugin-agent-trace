@@ -1,5 +1,13 @@
 # CordisX Agent Trace Showcase
 
+插件品牌图为 `assets/agent-trace.png`（256 × 256），通过公开的
+`CordisXPluginBrandIcon` 顶层 `icon` 导出供 Host 插件列表使用，运行时无需请求网络。
+替换图片后运行 `npm run icon:generate`；`npm run check` 会检查生成声明与 PNG
+是否一致。包内同时保留原始 PNG 和编译后的声明，会话操作继续使用 Host 语义图标。
+
+分发方式保持为正式 GitHub 仓库上的 `explicit-local-v1` 源码安装；当前私有包没有 npm
+发布或 release-tag 工作流。商店可引用固定 commit 的原始 PNG URL。
+
 Agent Trace Showcase 是独立、只读的 CordisX 插件仓库。插件只负责 Timeline
 业务投影与正文组合；会话 chrome、路由行为、共享控件、无障碍、权限 UI 与
 native lifecycle authority 均由 Host 负责。

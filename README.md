@@ -66,6 +66,17 @@ state cleanly. Page unmount and plugin deactivation own their disposers.
 
 ## Development and packaging
 
+The plugin-owned brand artwork is `assets/agent-trace.png` (256 × 256). The
+module exports the public `CordisXPluginBrandIcon` declaration as `icon`; Host
+plugin lists render its inline PNG without a network request. Run
+`npm run icon:generate` after replacing the asset; `npm run check` verifies that
+the generated declaration still matches. The package includes both the source
+PNG and its compiled declaration. Session actions keep their Host semantic icons.
+
+Distribution remains source-based `explicit-local-v1` at the canonical GitHub
+repository; this private package has no npm publication or release-tag workflow.
+The tracked PNG can be referenced by a commit-pinned raw GitHub URL for catalogs.
+
 ```sh
 npm ci
 npm run check
