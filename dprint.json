@@ -10,7 +10,7 @@
     "package-lock.json",
     // Byte-addressed security artifacts: do not rewrite manifests or their recorded digests.
     "runtime-manifest.json",
-    "cordisx.plugin.json"
+    "cordisx-package.json"
   ],
   "extends": "https://raw.githubusercontent.com/cordisx/cordisxmono/c63c2e8c2ba7e11502934a52ad2ce3734e804cdc/tooling/quality/dprint/code.json",
   "typescript": {
