@@ -1,6 +1,6 @@
 {
   "name": "@cordisx/agent-trace-showcase",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Read-only CordisX Agent Trace Timeline plugin",
   "license": "AGPL-3.0-or-later",
