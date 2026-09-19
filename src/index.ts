@@ -20,6 +20,7 @@ import { createTraceReactPage } from './react-view.js'
 import type { TraceShowcaseStore } from './types.js'
 
 export const name = 'agent-trace-showcase'
+export { icon } from './brand-icon.js'
 export const inject = ['i18n', 'pages', 'routes', 'slots', 'sessions']
 
 function text(key: string, fallback: string) {
