@@ -78,11 +78,11 @@ describe('plugin boundary', () => {
 
 describe('package manifest', () => {
   it('pins the exact v5 runtime manifest', async () => {
-    const packageManifest = JSON.parse(await readFile(new URL('../cordisx.plugin.json', import.meta.url), 'utf8'))
+    const packageManifest = JSON.parse(await readFile(new URL('../cordisx-package.json', import.meta.url), 'utf8'))
     const runtimeManifestText = await readFile(new URL('../runtime-manifest.json', import.meta.url), 'utf8')
     const runtimeManifest = JSON.parse(runtimeManifestText)
     expect(packageManifest.id).toBe('agent-trace-showcase')
-    expect(packageManifest.entry).toBe('./dist/index.js')
+    expect(packageManifest.entry).toBe('./dist/runtime/module.js')
     expect(packageManifest.schemaVersion).toBe(4)
     expect(packageManifest.runtimeManifest).toMatchObject({
       path: './runtime-manifest.json',
@@ -91,5 +91,12 @@ describe('package manifest', () => {
     })
     expect(runtimeManifest).toEqual(manifest)
     expect(packageManifest.canonicalSource).toBe('https://github.com/cordisx/plugin-agent-trace')
+  })
+
+  it('ships the standard package manifest and browser bundle', async () => {
+    const module = await readFile(new URL('../dist/runtime/module.js', import.meta.url), 'utf8')
+    expect(module).toMatch(/from\s*["']cordisx\/react["']/u)
+    expect(module).toMatch(/from\s*["']cordisx\/ui["']/u)
+    expect(module).not.toContain('node_modules/')
   })
 })

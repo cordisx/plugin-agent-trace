@@ -7,32 +7,27 @@ session without giving the plugin control over that session.
 
 ## Install
 
-Plugin ID: `agent-trace-showcase`. Current release: `0.1.1`.
+Plugin ID: `agent-trace-showcase`. Current release: `0.1.2`.
 
-Release `v0.1.1` is a documentation and source package. Its archive does not
-contain the standard `cordisx-package.json` manifest required by the current
-CordisX CLI artifact installer, so it cannot be installed with `plugin install`.
-Adding an artifact record to the Marketplace alone does not fix that package
-format gap.
-
-The published archive and `SHA256SUMS` remain available from the
-[GitHub release](https://github.com/cordisx/plugin-agent-trace/releases/tag/v0.1.1)
-for source inspection. Do not unpack it into a CordisX profile as a substitute
-for an installable package.
-
-After a future release provides the standard package manifest and compatible
-runtime bundle, the CLI syntax will be:
+The CordisX Community Marketplace feed must already be configured and enabled
+before `--source` can select it:
 
 ```sh
 FEED_URL=https://raw.githubusercontent.com/cordisx/marketplace/main/marketplace.json
 npx cordisx@beta source add "$FEED_URL" --yes
-npx cordisx@beta plugin install agent-trace-showcase --source "$FEED_URL" --version <installable-version>
+npx cordisx@beta plugin install agent-trace-showcase --source "$FEED_URL" --version 0.1.2
 ```
 
-For another profile, add the same `--profile <profile>` argument to both future
-commands. `--source` selects an already configured and enabled source; it does
-not register one. `--yes` confirms the source change only and does not approve
-plugin permissions. A discovery source is not a trust root.
+Skip `source add` when that exact feed is already enabled. For another profile,
+add the same `--profile <profile>` argument to both commands. `--source` selects
+an already configured and enabled source; it does not register one. `--yes`
+confirms the source change only and does not approve plugin permissions. A
+discovery source is not a trust root.
+
+The install command becomes available after the Marketplace v3 entry lists the
+verified `0.1.2` artifact. Until then, download the archive and `SHA256SUMS`
+from the
+[GitHub release](https://github.com/cordisx/plugin-agent-trace/releases/tag/v0.1.2).
 
 ## Use
 
@@ -60,9 +55,8 @@ entity state, or reconstruct missing history.
 
 ## Troubleshooting
 
-- **`plugin install` rejects `0.1.1`:** this release is not an installable CLI
-  artifact because its archive lacks `cordisx-package.json`. Use the release
-  only for source inspection and wait for an explicitly installable version.
+- **Install cannot find version `0.1.2`:** confirm the Marketplace v3 entry
+  lists the verified artifact. `--source` does not add or repair a feed.
 - **Timeline is empty:** open it from a concrete Agent session and review the
   three session permissions in CordisX plugin settings.
 - **Timeline stops updating:** reopen the session route. A terminal subscription

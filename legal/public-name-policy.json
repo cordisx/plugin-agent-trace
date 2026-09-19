@@ -13,6 +13,7 @@
     "runtimeImports": {
       "paths": [
         "package.json",
+        "scripts/build-runtime-bundle.mjs",
         "src/entry.ts",
         "src/index.ts"
       ],

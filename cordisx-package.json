@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/cordisx/cordisx-protocol/main/schemas/plugin-package.v4.schema.json",
   "schemaVersion": 4,
   "id": "agent-trace-showcase",
-  "version": "0.1.1",
-  "entry": "./dist/index.js",
+  "version": "0.1.2",
+  "entry": "./dist/runtime/module.js",
   "readme": "./README.md",
   "canonicalSource": "https://github.com/cordisx/plugin-agent-trace",
   "distribution": {

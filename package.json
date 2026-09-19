@@ -1,6 +1,6 @@
 {
   "name": "@cordisx/agent-trace-showcase",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Read-only CordisX Agent Trace Timeline plugin",
   "license": "AGPL-3.0-or-later",
@@ -12,14 +12,14 @@
     "dist",
     "README.md",
     "README.zh-Hans.md",
-    "cordisx.plugin.json",
+    "cordisx-package.json",
     "runtime-manifest.json",
     "legal"
   ],
   "scripts": {
     "icon:generate": "node scripts/generate-brand-icon.mjs",
     "icon:check": "node scripts/generate-brand-icon.mjs --check",
-    "build": "node scripts/clean-dist.mjs && tsc -p tsconfig.json",
+    "build": "node scripts/clean-dist.mjs && tsc -p tsconfig.json && node scripts/build-runtime-bundle.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "naming:check": "node scripts/check-public-naming.mjs",
@@ -36,14 +36,15 @@
     "cordisx": "0.1.0-beta.1"
   },
   "devDependencies": {
+    "@cordisx/eslint-config": "github:cordisx/cordisxmono#c63c2e8c2ba7e11502934a52ad2ce3734e804cdc",
     "@cordisx/protocol": "github:cordisx/cordisx-protocol#c96c290697f9e802a68c6d3bb094fd27d8d00d1e",
+    "@typescript-eslint/parser": "8.69.0",
     "dprint": "0.57.1",
+    "esbuild": "0.28.2",
+    "eslint": "9.39.4",
     "jsdom": "^26.1.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "@cordisx/eslint-config": "github:cordisx/cordisxmono#c63c2e8c2ba7e11502934a52ad2ce3734e804cdc",
-    "eslint": "9.39.4",
-    "@typescript-eslint/parser": "8.69.0"
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=22.19"
